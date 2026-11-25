@@ -208,3 +208,9 @@
 .a-strat { display: flex; flex-direction: column; gap: 10px; }
 .a-strat .x-link { margin-top: auto; padding-top: 6px; }
 @media (max-width: 600px) { .a-hero h1 .x-line { white-space: normal; } }
+
+/* Full-bleed hero: edge to edge, content stays on the page grid */
+html, body { overflow-x: clip; }
+.a-hero { width: 100vw; margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw); margin-top: 0; border-radius: 0; border: 0; border-bottom: 1px solid #161c28; min-height: min(86vh, 760px); padding-inline: max(clamp(20px, 5vw, 64px), calc((100vw - var(--page-max, 1200px)) / 2 + 24px)); }
+.a-hero__img { opacity: 0.38; }
+@media (max-width: 900px) { .a-hero { min-height: 0; } }
