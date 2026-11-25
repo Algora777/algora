@@ -1,0 +1,1617 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Algora: build, backtest, paper trade and deploy no-code trading bots for NSE, NFO and MCX, connected to your own broker." />
+    <meta name="theme-color" content="#07090e" />
+    <title>Algora · Trading bots for Indian markets</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap"
+    />
+    <link rel="stylesheet" href="hark.css" />
+    <link rel="stylesheet" href="hark-hero.css" />
+    <style>
+      /* ===== Theme tokens ===== */
+      [data-theme="light"] {
+        --x-bg: #fafafa; --x-surface: #ffffff; --x-surface-2: #f3f4f6; --x-text: #0b0d12; --x-muted: #5b6270;
+        --x-border: #e6e8ec; --x-border-strong: #d4d8df; --x-accent: #2f6feb; --x-accent-hover: #245ed1; --x-on-accent: #ffffff;
+        --x-up: #08794f; --x-up-soft: #e7f6ef; --x-down: #c62a2f; --x-down-soft: #fdecec; --x-overlay: rgba(11, 13, 18, 0.66);
+        --x-scrim: rgba(11, 13, 18, 0.45); --x-tile: #ffffff; --x-tile-border: #e6e8ec; --x-toast: #0b0d12; --x-toast-text: #ffffff;
+      }
+      [data-theme="dark"] {
+        --x-bg: #0b0d12; --x-surface: #12151c; --x-surface-2: #181c25; --x-text: #e8eaf0; --x-muted: #9aa1b0;
+        --x-border: #232836; --x-border-strong: #2f3545; --x-accent: #2f6feb; --x-accent-hover: #4a82f0; --x-on-accent: #ffffff;
+        --x-up: #22b57c; --x-up-soft: rgba(34, 181, 124, 0.12); --x-down: #ef5f63; --x-down-soft: rgba(239, 95, 99, 0.12); --x-overlay: rgba(6, 8, 12, 0.7);
+        --x-scrim: rgba(0, 0, 0, 0.6); --x-tile: #ffffff; --x-tile-border: #2f3545; --x-toast: #e8eaf0; --x-toast-text: #0b0d12;
+      }
+      :root { --x-ease: cubic-bezier(0.22, 1, 0.36, 1); --x-sans: "IBM Plex Sans", system-ui, sans-serif; --x-mono: "IBM Plex Mono", ui-monospace, monospace; --x-r: 6px; --x-r-l: 8px; }
+      html, body { overflow-x: clip; }
+      html[data-theme] body { background: var(--x-bg); color: var(--x-text); font: 400 15px/1.5 var(--x-sans); font-variant-numeric: tabular-nums; }
+      .x-mono { font-family: var(--x-mono); font-variant-numeric: tabular-nums; }
+      .x-up { color: var(--x-up); } .x-down { color: var(--x-down); }
+
+      /* ===== Top bar ===== */
+      .x-top { position: sticky; top: 0; z-index: 40; margin-top: -12px; display: flex; align-items: center; gap: 20px; height: 56px; }
+      .x-top::before { content: ""; position: absolute; inset: 0 -100vmax; background: var(--x-surface); border-bottom: 1px solid var(--x-border); z-index: -1; }
+      .x-brand { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: 18px; letter-spacing: -0.01em; color: var(--x-text); text-decoration: none; flex: none; }
+      .x-mark { width: 26px; height: 26px; flex: none; }
+      .x-tabs { position: relative; display: flex; gap: 2px; height: 100%; }
+      .x-tabs button { all: unset; cursor: pointer; padding: 0 12px; font-size: 14px; font-weight: 500; color: var(--x-muted); white-space: nowrap; transition: color 300ms var(--x-ease); }
+      .x-tabs button:hover, .x-tabs button[aria-selected="true"] { color: var(--x-text); }
+      .x-tabs button:focus-visible { outline: 2px solid var(--x-accent); outline-offset: -8px; border-radius: var(--x-r); }
+      .x-tabs__bar { position: absolute; bottom: -1px; left: 0; height: 2px; background: var(--x-accent); width: 0; transition: transform 450ms var(--x-ease), width 450ms var(--x-ease); }
+      .x-top__end { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+      .x-icon-btn { all: unset; box-sizing: border-box; cursor: pointer; width: 36px; height: 36px; display: grid; place-items: center; border: 1px solid var(--x-border); border-radius: var(--x-r); color: var(--x-text); transition: background 200ms var(--x-ease); }
+      .x-icon-btn:hover { background: var(--x-surface-2); }
+      .x-icon-btn:focus-visible { outline: 2px solid var(--x-accent); outline-offset: 2px; }
+      [data-theme="light"] .x-sun, [data-theme="dark"] .x-moon { display: none; }
+
+      /* ===== Buttons ===== */
+      .x-btn { all: unset; box-sizing: border-box; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 36px; padding: 0 14px; border-radius: var(--x-r); font: 500 14px/1 var(--x-sans); white-space: nowrap; border: 1px solid var(--x-border-strong); color: var(--x-text); background: var(--x-surface); transition: transform 300ms var(--x-ease), background 200ms var(--x-ease), border-color 200ms var(--x-ease); }
+      .x-btn:hover { transform: translateY(-1px); background: var(--x-surface-2); }
+      .x-btn:active { transform: translateY(0) scale(0.98); transition-duration: 80ms; }
+      .x-btn:focus-visible { outline: 2px solid var(--x-accent); outline-offset: 2px; }
+      .x-btn--primary { background: var(--x-accent); border-color: var(--x-accent); color: var(--x-on-accent); }
+      .x-btn--primary:hover { background: var(--x-accent-hover); border-color: var(--x-accent-hover); }
+      .x-btn--lg { height: 44px; padding: 0 20px; font-size: 15px; }
+      .x-btn--sm { height: 32px; padding: 0 12px; font-size: 13px; }
+      .x-btn--onimg { background: transparent; color: #fff; border-color: rgba(255, 255, 255, 0.4); }
+      .x-btn--onimg:hover { background: rgba(255, 255, 255, 0.08); }
+
+      /* ===== Ticker strip ===== */
+      .x-ticker { position: relative; min-height: 46px; border-bottom: 1px solid var(--x-border); margin-top: -16px; }
+      .x-ticker::before { content: ""; position: absolute; inset: 0 -100vmax; background: var(--x-surface); border-bottom: 1px solid var(--x-border); z-index: -1; }
+
+      /* ===== Tabs ===== */
+      .x-tab { animation: x-fade 450ms var(--x-ease); display: grid; gap: 48px; min-width: 0; }
+      .x-tab[hidden] { display: none; }
+      .x-tab.is-leaving { opacity: 0; transition: opacity 180ms linear; }
+      @keyframes x-fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+      .x-placeholder { padding: 64px 0; border-bottom: 1px solid var(--x-border); }
+      .x-placeholder p { color: var(--x-muted); margin-top: 6px; }
+
+      /* ===== Section heads ===== */
+      .x-sec { display: grid; gap: 16px; min-width: 0; }
+      .x-sec__head { display: flex; align-items: end; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+      .x-eyebrow { font: 500 12px/1 var(--x-mono); text-transform: uppercase; letter-spacing: 0.06em; color: var(--x-muted); margin-bottom: 8px; }
+      .x-h2 { font-size: 22px; font-weight: 600; letter-spacing: -0.015em; line-height: 1.25; text-align: left; }
+      .x-cap { font-size: 13px; color: var(--x-muted); }
+      .x-panel { background: var(--x-surface); border: 1px solid var(--x-border); border-radius: var(--x-r-l); overflow: hidden; min-width: 0; }
+
+      /* ===== Hero ===== */
+      .x-hero { position: relative; overflow: hidden; border-radius: var(--x-r-l); min-height: 520px; display: flex; align-items: flex-end; color: #fff; margin-top: 4px; background: #0b0d12; }
+      .x-hero__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+      .x-hero::after { content: ""; position: absolute; inset: 0; background: var(--x-overlay); }
+      .x-hero__copy { position: relative; z-index: 1; padding: clamp(24px, 5vw, 56px); max-width: 760px; display: grid; gap: 20px; }
+      .x-hero__tag { font: 500 12px/1 var(--x-mono); letter-spacing: 0.06em; text-transform: uppercase; color: rgba(255, 255, 255, 0.72); }
+      .x-hero h1 { font-size: clamp(34px, 6vw, 60px); line-height: 1.06; font-weight: 600; letter-spacing: -0.025em; text-align: left; }
+      .x-line { display: block; overflow: hidden; padding-bottom: 0.06em; }
+      .x-line > span { display: inline-block; transform: translateY(105%); transition: transform 800ms var(--x-ease); transition-delay: calc(var(--i) * 110ms + 100ms); }
+      .is-in .x-line > span { transform: none; }
+      .x-roll { display: inline-block; vertical-align: bottom; height: 1.06em; overflow: hidden; color: #7fb0ff; }
+      .x-roll__list { display: block; transition: transform 600ms var(--x-ease); }
+      .x-roll__list > span { display: block; height: 1.06em; }
+      .x-hero__sub { font-size: clamp(15px, 1.8vw, 18px); color: rgba(255, 255, 255, 0.82); max-width: 560px; }
+      .x-hero__ctas { display: flex; gap: 10px; flex-wrap: wrap; }
+      .x-hero__stats { display: flex; gap: 0; border-top: 1px solid rgba(255, 255, 255, 0.18); padding-top: 16px; margin-top: 4px; }
+      .x-hero__stats > div { padding-right: 24px; margin-right: 24px; border-right: 1px solid rgba(255, 255, 255, 0.18); }
+      .x-hero__stats > div:last-child { border: 0; margin: 0; padding: 0; }
+      .x-hero__stats b { display: block; font: 500 22px/1.2 var(--x-mono); }
+      .x-hero__stats span { font-size: 13px; color: rgba(255, 255, 255, 0.7); }
+
+      /* ===== Marquee ===== */
+      .x-marquee { overflow: hidden; border-block: 1px solid var(--x-border); padding-block: 14px; -webkit-mask: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+      .x-marquee__track { display: flex; gap: 40px; width: max-content; animation: x-scroll 40s linear infinite; }
+      .x-marquee:hover .x-marquee__track { animation-play-state: paused; }
+      @keyframes x-scroll { to { transform: translateX(-50%); } }
+      .x-logo-chip { display: inline-flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500; color: var(--x-muted); white-space: nowrap; }
+
+      /* ===== Broker tiles ===== */
+      .x-tile { width: 44px; height: 44px; flex: none; border-radius: 8px; background: var(--x-tile); border: 1px solid var(--x-tile-border); display: grid; place-items: center; overflow: hidden; }
+      .x-tile img { width: 34px; height: 34px; object-fit: contain; }
+      .x-tile--mono { background: #8b1e3f; border-color: #8b1e3f; color: #fff; font: 600 14px/1 var(--x-sans); letter-spacing: 0.02em; }
+      .x-tile--s { width: 28px; height: 28px; border-radius: 6px; }
+      .x-tile--s img { width: 22px; height: 22px; }
+      .x-tile--s.x-tile--mono { font-size: 12px; letter-spacing: 0; }
+      .x-brokers { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; }
+      .x-broker { display: grid; grid-template-columns: 44px 1fr; gap: 12px 12px; padding: 14px; background: var(--x-surface); border: 1px solid var(--x-border); border-radius: var(--x-r-l); transition: border-color 300ms var(--x-ease), transform 300ms var(--x-ease); }
+      .x-broker:hover { border-color: var(--x-border-strong); transform: translateY(-2px); }
+      .x-broker h3 { font-size: 15px; font-weight: 600; line-height: 1.3; }
+      .x-broker p { font-size: 13px; color: var(--x-muted); }
+      .x-broker__foot { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-top: 12px; border-top: 1px solid var(--x-border); }
+      .x-badge { display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 8px; border-radius: 4px; font: 500 12px/1 var(--x-sans); background: var(--x-surface-2); color: var(--x-muted); white-space: nowrap; }
+      .x-badge--up { background: var(--x-up-soft); color: var(--x-up); }
+      .x-badge--paper { background: var(--x-surface-2); color: var(--x-text); border: 1px solid var(--x-border); }
+      .x-badge--paper::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #d49a06; }
+      .x-count { font: 400 12px/1 var(--x-mono); color: var(--x-muted); }
+
+      /* ===== Pills and segmented controls ===== */
+      .x-pills { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+      .x-pills::-webkit-scrollbar { display: none; }
+      .x-pill { all: unset; cursor: pointer; flex: none; height: 32px; padding: 0 12px; display: inline-flex; align-items: center; border: 1px solid var(--x-border); border-radius: var(--x-r); font: 500 13px/1 var(--x-mono); color: var(--x-muted); background: var(--x-surface); transition: color 200ms, border-color 200ms, background 200ms; }
+      .x-pill:hover { color: var(--x-text); border-color: var(--x-border-strong); }
+      .x-pill[aria-pressed="true"] { color: var(--x-text); border-color: var(--x-text); }
+      .x-pill:focus-visible, .x-segbtn:focus-visible { outline: 2px solid var(--x-accent); outline-offset: 2px; }
+      .x-segctl { display: inline-flex; padding: 3px; gap: 2px; background: var(--x-surface-2); border: 1px solid var(--x-border); border-radius: var(--x-r-l); max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+      .x-segbtn { all: unset; cursor: pointer; flex: none; height: 30px; padding: 0 12px; display: inline-flex; align-items: center; border-radius: 5px; font-size: 13px; font-weight: 500; color: var(--x-muted); transition: background 250ms var(--x-ease), color 250ms var(--x-ease); }
+      .x-segbtn[aria-pressed="true"] { background: var(--x-surface); color: var(--x-text); box-shadow: 0 0 0 1px var(--x-border); }
+      .x-segbtn[data-tone="up"][aria-pressed="true"] { color: var(--x-up); background: color-mix(in srgb, var(--x-up) 12%, var(--x-surface)); box-shadow: 0 0 0 1px var(--x-up); }
+      .x-segbtn[data-tone="down"][aria-pressed="true"] { color: var(--x-down); background: color-mix(in srgb, var(--x-down) 12%, var(--x-surface)); box-shadow: 0 0 0 1px var(--x-down); }
+
+      /* ===== Widgets ===== */
+      .x-widget { min-height: 200px; background: var(--x-surface); position: relative; }
+      .x-widget:empty::before { content: "Loading…"; position: absolute; inset: 0; display: grid; place-items: center; font-size: 13px; color: var(--x-muted); }
+      .x-chart { height: 560px; }
+      .x-grid2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+      .x-subhead { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 12px 14px; border-bottom: 1px solid var(--x-border); }
+      .x-subhead h3 { font-size: 15px; font-weight: 600; }
+
+      /* ===== Bots at a glance ===== */
+      .x-bots { list-style: none; margin: 0; padding: 0; }
+      .x-bot { display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 16px; padding: 14px 16px; border-bottom: 1px solid var(--x-border); }
+      .x-bot:last-child { border-bottom: 0; }
+      .x-bot h3 { font-size: 15px; font-weight: 600; }
+      .x-bot p { font-size: 13px; color: var(--x-muted); }
+      .x-bot__pnl { font: 500 16px/1.2 var(--x-mono); color: var(--x-up); text-align: right; min-width: 120px; }
+      .x-bot__pnl small { display: block; font: 400 12px/1.3 var(--x-sans); color: var(--x-muted); }
+
+      /* ===== Dashboard ===== */
+      .x-dash__top { display: grid; gap: 10px; justify-items: start; }
+      .x-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+      .x-kpi { padding: 14px 16px; background: var(--x-surface); border: 1px solid var(--x-border); border-radius: var(--x-r-l); display: grid; gap: 6px; align-content: start; min-width: 0; }
+      .x-kpi__label { font: 500 12px/1.2 var(--x-mono); text-transform: uppercase; letter-spacing: 0.06em; color: var(--x-muted); }
+      .x-kpi__fig { font: 500 22px/1.2 var(--x-mono); letter-spacing: -0.01em; }
+      .x-kpi__sub { font-size: 13px; color: var(--x-muted); }
+      .x-accts { display: flex; flex-wrap: wrap; gap: 8px; }
+      .x-acct { display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px 6px 6px; background: var(--x-surface); border: 1px solid var(--x-border); border-radius: var(--x-r-l); font-size: 14px; min-width: 0; }
+      .x-acct small { color: var(--x-muted); font-size: 13px; }
+      .x-empty { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 16px; }
+      .x-empty p { color: var(--x-muted); font-size: 14px; }
+      .x-tbl { width: 100%; border-collapse: collapse; font-size: 14px; }
+      .x-tbl th, .x-tbl td { padding: 10px 14px; border-bottom: 1px solid var(--x-border); text-align: left; vertical-align: top; }
+      .x-tbl thead th { font: 500 12px/1.2 var(--x-mono); text-transform: uppercase; letter-spacing: 0.06em; color: var(--x-muted); }
+      .x-tbl tbody tr:last-child > * { border-bottom: 0; }
+      .x-tbl tbody th { font-weight: 500; }
+      .x-tbl small { display: block; font-size: 12px; color: var(--x-muted); font-weight: 400; }
+      .x-tbl .x-num { text-align: right; font-family: var(--x-mono); font-weight: 500; white-space: nowrap; }
+      .x-tbl tfoot td, .x-tbl tfoot th { border-top: 1px solid var(--x-border-strong); border-bottom: 0; font-weight: 600; }
+      .x-bars { list-style: none; margin: 0; padding: 14px; display: grid; gap: 8px; }
+      .x-bars li { display: grid; grid-template-columns: 92px minmax(0, 1fr) 64px; align-items: center; gap: 10px; font-size: 13px; }
+      .x-bars__name { font-family: var(--x-mono); color: var(--x-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .x-bars__val { font-family: var(--x-mono); font-weight: 500; text-align: right; }
+      .x-bars__track { position: relative; height: 14px; display: grid; grid-template-columns: 1fr 1fr; }
+      .x-bars__track::after { content: ""; position: absolute; left: 50%; top: -4px; bottom: -4px; width: 1px; background: var(--x-border-strong); }
+      .x-bars__bar { height: 100%; width: var(--w); border-radius: 3px; }
+      .x-bars__bar.is-down { grid-column: 1; justify-self: end; background: var(--x-down); border-radius: 3px 0 0 3px; }
+      .x-bars__bar.is-up { grid-column: 2; background: var(--x-up); border-radius: 0 3px 3px 0; }
+      .x-chipset { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px; }
+      .x-chipset .pill { font-family: var(--x-mono); }
+      .x-dash__note { padding: 12px 14px; border: 1px dashed var(--x-border-strong); border-radius: var(--x-r-l); font-size: 13px; color: var(--x-muted); }
+      @media (max-width: 520px) {
+        .x-kpis { grid-template-columns: 1fr 1fr; gap: 8px; }
+        .x-kpi { padding: 12px; }
+        .x-kpi__fig { font-size: 18px; }
+        .x-tbl th, .x-tbl td { padding: 10px; }
+        .x-bars li { grid-template-columns: 78px minmax(0, 1fr) 56px; gap: 8px; font-size: 12px; }
+      }
+
+      /* ===== Footer ===== */
+      .x-foot { border-top: 1px solid var(--x-border); margin-top: 32px; padding-top: 32px; display: grid; grid-template-columns: 1.6fr 1fr 1fr 1.3fr; gap: 24px; font-size: 14px; }
+      .x-foot h4 { margin: 0 0 10px; font: 500 12px/1 var(--x-mono); text-transform: uppercase; letter-spacing: 0.06em; color: var(--x-muted); }
+      .x-foot ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+      .x-foot a, .x-foot button.x-flink { all: unset; cursor: pointer; color: var(--x-text); }
+      .x-foot a:hover, .x-foot button.x-flink:hover { color: var(--x-accent); }
+      .x-foot a:focus-visible, .x-foot button.x-flink:focus-visible { outline: 2px solid var(--x-accent); outline-offset: 2px; }
+      .x-foot__brand p { color: var(--x-muted); margin-top: 10px; }
+      .x-foot__legal { grid-column: 1 / -1; border-top: 1px solid var(--x-border); padding-top: 16px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 12px; color: var(--x-muted); }
+      .x-foot__legal p { max-width: 720px; }
+
+      /* ===== Modal and toast ===== */
+      .x-modal { border: 1px solid var(--x-border); border-radius: var(--x-r-l); background: var(--x-surface); color: var(--x-text); padding: 0; width: min(480px, calc(100vw - 24px)); max-height: calc(100dvh - 32px); }
+      .x-modal::backdrop { background: var(--x-scrim); }
+      .x-modal[open] { animation: x-pop 350ms var(--x-ease); }
+      @keyframes x-pop { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+      .x-modal__head { display: flex; align-items: center; gap: 12px; padding: 16px 18px; border-bottom: 1px solid var(--x-border); }
+      .x-modal__head h2 { font-size: 17px; font-weight: 600; }
+      .x-modal__head p { font-size: 13px; color: var(--x-muted); }
+      .x-modal__head .x-icon-btn { margin-left: auto; border: 0; }
+      .x-modal__body { padding: 18px; display: grid; gap: 14px; }
+      .x-field { display: grid; gap: 6px; font-size: 13px; font-weight: 500; }
+      .x-field input { font: 400 14px var(--x-mono); height: 40px; padding: 0 12px; border: 1px solid var(--x-border-strong); border-radius: var(--x-r); background: var(--x-bg); color: var(--x-text); }
+      .x-field input:focus { outline: none; border-color: var(--x-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--x-accent) 20%, transparent); }
+      .x-fields2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      /* ===== Bot builder ===== */
+      .x-field select { font: 400 14px var(--x-sans); height: 40px; padding: 0 10px; border: 1px solid var(--x-border-strong); border-radius: var(--x-r); background: var(--x-bg); color: var(--x-text); min-width: 0; }
+      .x-field select:focus { outline: none; border-color: var(--x-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--x-accent) 20%, transparent); }
+      .x-field select:disabled { color: var(--x-muted); background: var(--x-surface-2); cursor: not-allowed; }
+      .x-field input { min-width: 0; }
+      .x-field[hidden] { display: none; }
+      .x-field .x-segctl { height: 40px; box-sizing: border-box; align-items: center; justify-self: start; }
+      .x-segbtn:disabled { opacity: 0.45; cursor: not-allowed; }
+      .x-hint { font-weight: 400; font-size: 12px; color: var(--x-muted); }
+      .x-link { all: unset; cursor: pointer; justify-self: start; font-size: 13px; font-weight: 500; color: var(--x-accent-hover); text-decoration: underline; text-underline-offset: 2px; min-height: 24px; }
+      .x-link:focus-visible { outline: 2px solid var(--x-accent); outline-offset: 2px; border-radius: 2px; }
+      .x-link[hidden] { display: none; }
+      .x-bf { padding: 18px; display: grid; gap: 18px; overflow: visible; }
+      .x-bf__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; align-items: start; }
+      .x-bf__foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding-top: 16px; border-top: 1px solid var(--x-border); }
+      .x-bf__foot .x-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+      .x-bcards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+      .x-bcard { display: grid; gap: 12px; align-content: start; padding: 14px; background: var(--x-surface); border: 1px solid var(--x-border); border-radius: var(--x-r-l); min-width: 0; }
+      .x-bcard__head { display: flex; align-items: start; justify-content: space-between; gap: 8px; }
+      .x-bcard h3 { font-size: 15px; font-weight: 600; line-height: 1.3; overflow-wrap: anywhere; }
+      .x-bcard__sub { font-size: 13px; color: var(--x-muted); }
+      .x-bcard dl { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; margin: 0; font-size: 13px; }
+      .x-bcard dt { color: var(--x-muted); }
+      .x-bcard dd { margin: 0; font-family: var(--x-mono); overflow-wrap: anywhere; }
+      .x-bcard__foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; padding-top: 12px; border-top: 1px solid var(--x-border); }
+      .x-bcard__foot div { display: flex; gap: 6px; }
+      .x-status { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--x-muted); }
+      .x-status::before { content: ""; width: 7px; height: 7px; border-radius: 50%; border: 1.5px solid var(--x-muted); box-sizing: border-box; }
+      .x-btn--danger { color: var(--x-down); }
+      .x-btn--danger:hover { background: var(--x-down-soft); border-color: var(--x-down); }
+      @media (max-width: 520px) {
+        .x-bf { padding: 14px; }
+        .x-bf__grid { grid-template-columns: 1fr; gap: 14px; }
+        .x-field .x-segctl { height: auto; justify-self: stretch; }
+        .x-field .x-segbtn { height: 44px; min-width: 44px; flex: 1 0 auto; justify-content: center; }
+        .x-link { min-height: 44px; display: inline-flex; align-items: center; }
+        .x-bf__foot .x-btn { width: 100%; height: 44px; }
+        .x-bcard__foot .x-btn { height: 40px; }
+      }
+      .x-steps { list-style: none; counter-reset: s; margin: 0; padding: 0; display: grid; gap: 10px; font-size: 14px; }
+      .x-steps li { counter-increment: s; display: grid; grid-template-columns: 24px 1fr; gap: 10px; }
+      .x-steps li::before { content: counter(s); width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--x-border-strong); display: grid; place-items: center; font: 500 12px/1 var(--x-mono); color: var(--x-muted); }
+      .x-or { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--x-muted); }
+      .x-or::before, .x-or::after { content: ""; flex: 1; height: 1px; background: var(--x-border); }
+      .x-saved { display: grid; gap: 6px; font-size: 13px; }
+      .x-saved li { display: flex; justify-content: space-between; padding: 8px 10px; border: 1px solid var(--x-border); border-radius: var(--x-r); list-style: none; }
+      .x-saved ul { margin: 0; padding: 0; display: grid; gap: 6px; }
+      /* ===== Backtest ===== */
+      #tab-backtest [hidden] { display: none !important; }
+      .x-bt-up { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+      .x-file { position: relative; overflow: hidden; }
+      .x-file input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+      .x-file:focus-within { outline: 2px solid var(--x-accent); outline-offset: 2px; }
+      .x-bt-fmt { font: 400 12px/1.6 var(--x-mono); color: var(--x-muted); overflow-wrap: anywhere; }
+      .x-kpi__fig--s { font-size: 16px; }
+      .x-eq-wrap { padding: 14px; }
+      .x-eq { display: block; width: 100%; height: 200px; }
+      .x-eq__line { fill: none; stroke: var(--x-accent); stroke-width: 1.75; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+      .x-eq__area { fill: var(--x-accent); opacity: 0.1; }
+      .x-eq__zero { stroke: var(--x-border-strong); stroke-width: 1; stroke-dasharray: 3 4; vector-effect: non-scaling-stroke; }
+      .x-scroll { max-height: 440px; overflow: auto; overscroll-behavior: contain; }
+      .x-scroll:focus-visible { outline: 2px solid var(--x-accent); outline-offset: -2px; }
+      .x-scroll .x-tbl { min-width: 620px; }
+      .x-scroll thead th { position: sticky; top: 0; z-index: 1; background: var(--x-surface); box-shadow: inset 0 -1px 0 var(--x-border); }
+      .x-bt-acts { display: flex; gap: 8px; flex-wrap: wrap; }
+      @media (max-width: 520px) {
+        .x-file, .x-bt-acts .x-btn, .x-subhead #bt-csv { height: 44px; }
+        .x-bt-acts .x-btn { flex: 1 1 auto; }
+      }
+      .x-toast { position: fixed; left: 50%; bottom: 24px; z-index: 100; transform: translate(-50%, 16px); opacity: 0; pointer-events: none; background: var(--x-toast); color: var(--x-toast-text); padding: 10px 16px; border-radius: var(--x-r); font-size: 14px; font-weight: 500; transition: opacity 300ms var(--x-ease), transform 400ms var(--x-ease); display: flex; align-items: center; gap: 8px; }
+      .x-toast.is-on { opacity: 1; transform: translate(-50%, 0); }
+
+      /* ===== Scroll reveal ===== */
+      .x-rv > * { opacity: 0; transform: translateY(16px); transition: opacity 600ms var(--x-ease), transform 700ms var(--x-ease); transition-delay: calc(var(--i, 0) * 70ms); }
+      .x-rv.is-in > * { opacity: 1; transform: none; }
+
+      /* ===== Bottom bar (phones) ===== */
+      .x-bottom { display: none; }
+      @media (max-width: 860px) {
+        .x-tabs { display: none; }
+        .x-bottom { display: grid; grid-template-columns: repeat(4, 1fr); position: fixed; left: 0; right: 0; bottom: 0; z-index: 50; background: var(--x-surface); border-top: 1px solid var(--x-border); padding-bottom: env(safe-area-inset-bottom); }
+        .x-bottom button { all: unset; cursor: pointer; display: grid; justify-items: center; gap: 3px; padding: 8px 2px 7px; min-height: 52px; box-sizing: border-box; font-size: 12px; font-weight: 500; color: var(--x-muted); text-align: center; position: relative; }
+        .x-bottom button[aria-selected="true"] { color: var(--x-accent-hover); }
+        .x-icon-btn { width: 44px; height: 44px; }
+        .x-top .x-btn { height: 44px; }
+        .x-brand { min-height: 44px; }
+        .x-foot a, .x-foot button.x-flink { display: inline-flex; align-items: center; min-height: 44px; min-width: 44px; }
+        .x-foot ul { gap: 0; }
+        .x-bottom button[aria-selected="true"]::before { content: ""; position: absolute; top: -1px; left: 30%; right: 30%; height: 2px; background: var(--x-accent); }
+        html[data-theme] body { padding-bottom: 72px; }
+        .x-toast { bottom: 84px; }
+        .x-grid2 { grid-template-columns: 1fr; }
+        .x-foot { grid-template-columns: 1fr 1fr; }
+        .x-foot__brand, .x-foot__contact { grid-column: 1 / -1; }
+        .x-chart { height: 420px; }
+      }
+      @media (max-width: 520px) {
+        .x-top { gap: 10px; }
+        .x-getstarted { display: none; }
+        .x-hero { min-height: 560px; }
+        .x-hero__stats > div { padding-right: 14px; margin-right: 14px; }
+        .x-hero__stats b { font-size: 18px; }
+        .x-bot { grid-template-columns: 1fr auto; }
+        .x-bot .x-badge { grid-row: 1; grid-column: 2; justify-self: end; }
+        .x-bot__pnl { grid-column: 1 / -1; text-align: left; display: flex; gap: 8px; align-items: baseline; }
+        .x-fields2 { grid-template-columns: 1fr; }
+      }
+      /* ===== Saved data controls ===== */
+      .x-data { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+      .x-data__acts { display: flex; gap: 6px; flex-wrap: wrap; }
+      @media (max-width: 900px) { .x-data__acts .x-btn { height: 44px; } }
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after { animation-duration: 1ms !important; animation-iteration-count: 1 !important; transition-duration: 1ms !important; transition-delay: 0ms !important; }
+        .x-marquee__track { animation: none; flex-wrap: wrap; width: auto; }
+        .x-marquee__track [aria-hidden="true"] { display: none; }
+      }
+    </style>
+    <link rel="stylesheet" href="algora-home.css" />
+  </head>
+  <body>
+    <div class="page" id="top">
+      <!-- ===== Top bar ===== -->
+      <header class="x-top">
+        <a class="x-brand" href="#" data-goto="home" aria-label="Algora home">
+          <svg class="x-mark" viewBox="0 0 32 32" aria-hidden="true">
+            <rect width="32" height="32" rx="7" fill="var(--x-accent)" />
+            <path d="M7 25 L16 6 L25 25" fill="none" stroke="#fff" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" />
+            <path d="M10.5 19.5 L14 16.5 L17 18.5 L21.5 14" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" />
+          </svg>
+          Algora
+        </a>
+        <nav class="x-tabs" role="tablist" aria-label="Sections">
+          <button role="tab" data-tab="home" aria-selected="true">Home</button>
+          <button role="tab" data-tab="dashboard" aria-selected="false">Dashboard</button>
+          <button role="tab" data-tab="bots" aria-selected="false">Bots</button>
+          <button role="tab" data-tab="backtest" aria-selected="false">Backtest &amp; Paper Trade</button>
+          <span class="x-tabs__bar" aria-hidden="true"></span>
+        </nav>
+        <div class="x-top__end">
+          <button class="x-icon-btn" id="theme-toggle" type="button" aria-label="Switch to dark theme">
+            <svg class="x-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" /></svg>
+            <svg class="x-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" /></svg>
+          </button>
+          <button class="x-btn" type="button" data-open="signin">Sign in</button>
+          <button class="x-btn x-btn--primary x-getstarted" type="button" data-goto-anchor="brokers">Get started</button>
+        </div>
+      </header>
+
+      <!-- ===== Ticker strip (TradingView ticker tape) ===== -->
+      <div class="x-ticker" id="tv-ticker" aria-label="Market ticker"></div>
+
+      <main class="main">
+        <!-- ================= TAB: HOME ================= -->
+        <section class="x-tab" id="tab-home" role="tabpanel" aria-label="Home">
+          <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+            <defs>
+              <linearGradient id="a-sg" x1="0" x2="1"><stop offset="0" stop-color="#7fb0ff" /><stop offset="0.5" stop-color="#b69cff" /><stop offset="1" stop-color="#5eead4" /></linearGradient>
+              <linearGradient id="a-sa" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#5eead4" stop-opacity="0.28" /><stop offset="1" stop-color="#5eead4" stop-opacity="0" /></linearGradient>
+              <linearGradient id="a-sa2" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#2f6feb" stop-opacity="0.22" /><stop offset="1" stop-color="#2f6feb" stop-opacity="0" /></linearGradient>
+            </defs>
+          </svg>
+
+          <!-- 1. Hero -->
+          <div class="a-hero" id="hero">
+            <div class="a-hero__bg" aria-hidden="true">
+              <img class="a-hero__img" src="algora_hero.png" alt="" />
+              <span class="a-blob a-blob--1"></span><span class="a-blob a-blob--2"></span><span class="a-blob a-blob--3"></span>
+              <div class="a-gridbg"></div>
+              <canvas id="a-candles"></canvas>
+            </div>
+            <div class="a-hero__copy">
+              <span class="a-pillnew"><b>NEW</b> Paper mode for every bot, free while in beta</span>
+              <h1 aria-label="Automate trading with your own strategies">
+                <span class="x-line" aria-hidden="true"><span style="--i: 0">Automate trading</span></span>
+                <span class="x-line" aria-hidden="true"><span style="--i: 1">with your own</span></span>
+                <span class="x-line" aria-hidden="true"><span style="--i: 2"><span class="x-roll"><span class="x-roll__list"><span>strategies</span><span>indicators</span><span>rules</span><span>edge</span><span>strategies</span></span></span></span></span>
+              </h1>
+              <p class="a-hero__sub">Build, backtest, paper trade and deploy bots on Nifty, BankNifty, stocks and MCX, connected to your own broker.</p>
+              <div class="a-ctas">
+                <button class="x-btn x-btn--lg a-btn-glow a-mag" type="button" data-goto="bots">Build your first bot</button>
+                <button class="x-btn x-btn--lg a-btn-ghost a-mag" type="button" data-goto="backtest">
+                  Run a backtest
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+                </button>
+              </div>
+              <div class="a-trust">
+                <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg>No code needed</span>
+                <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg>Funds stay with your broker</span>
+                <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg>API keys never touch this page</span>
+              </div>
+            </div>
+
+            <div class="a-console" aria-label="Example bot console, simulated">
+              <div class="a-console__in">
+                <div class="a-console__bar"><i></i><i></i><i></i><span>algora://bots/fcc-nifty-15m</span><em>PAPER</em></div>
+                <div class="a-console__body">
+                  <div class="a-console__top">
+                    <div><h3>First Candle Cross · NIFTY</h3><p>15m · buffer 0.1% · square-off 15:15</p></div>
+                    <span class="a-live">Running</span>
+                  </div>
+                  <div class="a-console__kpis">
+                    <div><small>Paper P&amp;L</small><b id="a-pnl" class="x-up">₹0</b></div>
+                    <div><small>Trades</small><b id="a-trades">0</b></div>
+                    <div><small>Win rate</small><b id="a-win">—</b></div>
+                  </div>
+                  <svg class="a-spark" id="a-spark" viewBox="0 0 400 110" preserveAspectRatio="none" aria-hidden="true"><path class="a-spark__area" /><path class="a-spark__line" /></svg>
+                  <ul class="a-log" id="a-log" aria-hidden="true"></ul>
+                  <p class="a-console__note">Simulated demo · not real results</p>
+                </div>
+              </div>
+              <div class="a-float a-float--1" aria-hidden="true">Square-off in<b id="a-sq">—</b></div>
+              <div class="a-float a-float--2" aria-hidden="true">Signal<b class="x-up">LONG ▲ NIFTY</b></div>
+            </div>
+          </div>
+
+          <!-- 2. Broker logos -->
+          <div class="a-strip">
+            <p>Connects to India's leading brokers</p>
+            <div class="x-marquee" aria-label="Supported brokers"><div class="x-marquee__track" id="broker-marquee"></div></div>
+          </div>
+
+          <!-- 3. Stats -->
+          <div class="a-stats x-rv" role="list">
+            <div class="a-stat" role="listitem"><b><span data-count="12">12</span></b><span>Broker APIs supported</span></div>
+            <div class="a-stat" role="listitem"><b><span data-count="5">5</span></b><span>Strategy templates</span></div>
+            <div class="a-stat" role="listitem"><b><span data-count="3">3</span></b><span>Segments: NSE, NFO, MCX</span></div>
+            <div class="a-stat" role="listitem"><b>₹<span data-count="0">0</span></b><span>To build, backtest and paper trade</span></div>
+          </div>
+
+          <!-- 4. How it works -->
+          <section class="x-sec" aria-labelledby="how-h" style="gap: 40px">
+            <div class="a-head x-rv">
+              <span class="a-kicker">How it works</span>
+              <h2 class="a-h2" id="how-h"><span class="a-scr" data-scramble>Idea to running bot</span> <span class="a-grad">in four steps.</span></h2>
+              <p class="a-lead">Every bot moves through the same pipeline, so nothing reaches your broker before you've seen how it behaves.</p>
+            </div>
+            <div class="a-steps" id="a-steps">
+              <div class="a-step"><span class="a-step__dot">01</span><h3>Build</h3><p>Pick a strategy, an instrument and your exits. No code, every rule visible.</p><button class="x-link" type="button" data-goto="bots">Open builder →</button></div>
+              <div class="a-step"><span class="a-step__dot">02</span><h3>Backtest</h3><p>Replay it on your own candle data, with costs, drawdown and every trade listed.</p><button class="x-link" type="button" data-goto="backtest">Run a backtest →</button></div>
+              <div class="a-step"><span class="a-step__dot">03</span><h3>Paper trade</h3><p>Let it run on live prices with no real orders, and watch P&amp;L on your dashboard.</p><button class="x-link" type="button" data-goto="dashboard">See dashboard →</button></div>
+              <div class="a-step"><span class="a-step__dot">04</span><h3>Go live <span class="a-soon">SOON</span></h3><p>Orders go through your own broker's official API. Pause or exit any time.</p><button class="x-link" type="button" data-goto-anchor="brokers">Connect a broker →</button></div>
+            </div>
+          </section>
+
+          <!-- 5. Bento features -->
+          <section class="x-sec" aria-labelledby="feat-h" style="gap: 40px">
+            <div class="a-head x-rv">
+              <span class="a-kicker">The platform</span>
+              <h2 class="a-h2" id="feat-h"><span class="a-scr" data-scramble>Everything a systematic trader needs.</span></h2>
+            </div>
+            <div class="a-bento">
+              <article class="a-card a-c4 a-tilt">
+                <span class="a-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16M5 16l4-5 4 3 6-8" /></svg></span>
+                <h3>Backtest engine</h3>
+                <p>Upload candles, set buffer, exits and costs, and get win rate, profit factor, drawdown and a full trade log in seconds. Nothing leaves your browser.</p>
+                <div class="a-vis"><svg class="a-mini-eq" id="a-mini-eq" viewBox="0 0 600 140" preserveAspectRatio="none" aria-hidden="true"><path class="a" /><path class="l" /></svg></div>
+                <button class="x-link" type="button" data-goto="backtest">Try the backtester →</button>
+              </article>
+              <article class="a-card a-c2 a-tilt">
+                <span class="a-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="5" y="8" width="14" height="11" rx="2" /><path d="M12 4v4M9 13h.01M15 13h.01" /></svg></span>
+                <h3>No-code bot builder</h3>
+                <p>Rules you can read at a glance.</p>
+                <div class="a-rules">
+                  <div><em>IF</em>close &gt; first-candle high + 0.1%</div>
+                  <div><em>THEN</em>buy 1 lot · max 4 / day</div>
+                  <div><em>EXIT</em>flip, target or stop</div>
+                </div>
+                <button class="x-link" type="button" data-goto="bots">Build a bot →</button>
+              </article>
+              <article class="a-card a-c2 a-tilt">
+                <span class="a-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8" /><path d="M12 8v4l3 2" /></svg></span>
+                <h3>Auto square-off</h3>
+                <div class="a-clock"><span id="a-clock">15:15</span><small>IST · NSE</small></div>
+                <p>Every intraday bot closes out before the bell. MCX bots switch to 23:15 automatically.</p>
+              </article>
+              <article class="a-card a-c2 a-tilt">
+                <span class="a-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="8" r="3" /><circle cx="17" cy="10" r="2.5" /><path d="M3 19c0-3 3-5 6-5s6 2 6 5M14 19c0-2 1.5-3.5 4-3.5s3 1 3 3" /></svg></span>
+                <h3>Many accounts, one screen</h3>
+                <p>Label personal, HUF or family accounts per broker and route each bot where it belongs.</p>
+                <div class="a-chips" id="a-chips"></div>
+              </article>
+              <article class="a-card a-c2 a-tilt">
+                <span class="a-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg></span>
+                <h3>Private by design</h3>
+                <p>Bots, labels and settings stay in your browser, with export and import. Real API keys live only in your bot's own server.</p>
+              </article>
+            </div>
+          </section>
+
+          <!-- 6. Strategy library -->
+          <section class="x-sec" aria-labelledby="strat-h" style="gap: 40px">
+            <div class="x-sec__head x-rv">
+              <div class="a-head">
+                <span class="a-kicker">Strategy library</span>
+                <h2 class="a-h2" id="strat-h"><span class="a-scr" data-scramble>Start from a proven template.</span></h2>
+              </div>
+              <button class="x-btn" type="button" data-goto="bots">Open the builder</button>
+            </div>
+            <div class="a-strats x-rv">
+              <article class="a-card a-strat a-tilt"><span class="a-strat__no">01 · Intraday</span><h3>First Candle Cross</h3><p>Trade the break of the day's first candle range, with a buffer to skip false moves.</p><div class="a-tags"><span class="a-tag">NIFTY</span><span class="a-tag">BANKNIFTY</span><span class="a-tag">Backtestable</span></div><button class="x-link" type="button" data-strategy="First Candle Cross">Use template →</button></article>
+              <article class="a-card a-strat a-tilt"><span class="a-strat__no">02 · Intraday</span><h3>Opening Range Breakout</h3><p>Wait for the opening range to form, then follow the side that breaks first.</p><div class="a-tags"><span class="a-tag">Index</span><span class="a-tag">Stocks</span></div><button class="x-link" type="button" data-strategy="Opening Range Breakout">Use template →</button></article>
+              <article class="a-card a-strat a-tilt"><span class="a-strat__no">03 · Intraday</span><h3>Gap fade</h3><p>Fade outsized opening gaps back toward the previous close.</p><div class="a-tags"><span class="a-tag">Stocks</span><span class="a-tag">Mean reversion</span></div><button class="x-link" type="button" data-strategy="Gap fade">Use template →</button></article>
+              <article class="a-card a-strat a-tilt"><span class="a-strat__no">04 · Positional</span><h3>Monthly option spread</h3><p>A defined-risk spread on the monthly expiry, set once and managed by rules.</p><div class="a-tags"><span class="a-tag">NFO</span><span class="a-tag">Defined risk</span></div><button class="x-link" type="button" data-strategy="Monthly option spread">Use template →</button></article>
+              <article class="a-card a-strat a-tilt"><span class="a-strat__no">05 · Positional</span><h3>Momentum</h3><p>Hold the strongest names and rotate on a schedule you set.</p><div class="a-tags"><span class="a-tag">Nifty 50</span><span class="a-tag">Rebalance</span></div><button class="x-link" type="button" data-strategy="Momentum">Use template →</button></article>
+            </div>
+          </section>
+
+          <!-- 7. Market pulse -->
+          <section class="x-sec" id="chart" aria-labelledby="chart-h" style="gap: 24px">
+            <div class="x-sec__head x-rv">
+              <div class="a-head">
+                <span class="a-kicker">Market pulse</span>
+                <h2 class="a-h2" id="chart-h"><span class="a-scr" data-scramble>Live across NSE, BSE and MCX.</span></h2>
+              </div>
+              <div class="x-pills" id="chart-pills" role="group" aria-label="Chart symbol">
+                <button class="x-pill" type="button" data-sym="NSE:NIFTY" aria-pressed="true">NIFTY</button>
+                <button class="x-pill" type="button" data-sym="NSE:BANKNIFTY" aria-pressed="false">BANKNIFTY</button>
+                <button class="x-pill" type="button" data-sym="MCX:CRUDEOIL1!" aria-pressed="false">CRUDEOIL</button>
+                <button class="x-pill" type="button" data-sym="MCX:GOLD1!" aria-pressed="false">GOLD</button>
+                <button class="x-pill" type="button" data-sym="NSE:ICICIBANK" aria-pressed="false">ICICIBANK</button>
+                <button class="x-pill" type="button" data-sym="NSE:HDFCBANK" aria-pressed="false">HDFCBANK</button>
+              </div>
+            </div>
+            <div class="a-pulse">
+              <div class="x-panel"><div class="x-widget x-chart" id="tv-chart"></div></div>
+              <div class="x-panel" id="markets">
+                <div class="x-subhead">
+                  <h3>Quotes</h3>
+                  <div class="x-segctl" id="quotes-seg" role="group" aria-label="Quote list">
+                    <button class="x-segbtn" type="button" data-group="indices" aria-pressed="true">Indices</button>
+                    <button class="x-segbtn" type="button" data-group="stocks" aria-pressed="false">Stocks</button>
+                    <button class="x-segbtn" type="button" data-group="mcx" aria-pressed="false">MCX</button>
+                  </div>
+                </div>
+                <div class="x-widget" id="tv-quotes" style="height: 508px"></div>
+              </div>
+            </div>
+            <div class="x-grid2">
+              <div class="x-panel">
+                <div class="x-subhead">
+                  <h3>Top movers</h3>
+                  <div class="x-segctl" id="hot-seg" role="group" aria-label="Movers list">
+                    <button class="x-segbtn" type="button" data-tone="up" data-list="gainers" aria-pressed="true">Gainers</button>
+                    <button class="x-segbtn" type="button" data-tone="down" data-list="losers" aria-pressed="false">Losers</button>
+                    <button class="x-segbtn" type="button" data-list="active" aria-pressed="false">Most active</button>
+                  </div>
+                </div>
+                <div class="x-widget" id="tv-hotlists" style="height: 480px"></div>
+              </div>
+              <div class="x-panel">
+                <div class="x-subhead"><h3>Sensex heatmap</h3><span class="x-cap">By sector, coloured by change</span></div>
+                <div class="x-widget" id="tv-heatmap" style="height: 480px"></div>
+              </div>
+            </div>
+            <div class="x-panel" id="news"><div class="x-subhead"><h3>Market news</h3><span class="x-cap">India</span></div><div class="x-widget" id="tv-news" style="height: 440px"></div></div>
+            <p class="x-cap">Market data and charts by TradingView.</p>
+          </section>
+
+          <!-- 8. Safety -->
+          <section class="x-sec" aria-labelledby="safe-h" style="gap: 40px">
+            <div class="a-head a-head--c x-rv">
+              <span class="a-kicker">Safety</span>
+              <h2 class="a-h2" id="safe-h">Your money. Your broker. <span class="a-grad">Your control.</span></h2>
+            </div>
+            <div class="a-safe x-rv">
+              <article class="a-card a-tilt"><span class="a-safe__no">01</span><h3>Funds never leave your account</h3><p>Algora never holds money. Orders go to your own SEBI-registered broker through its official API.</p></article>
+              <article class="a-card a-tilt"><span class="a-safe__no">02</span><h3>Paper first, always</h3><p>Every bot starts in paper mode. You decide when, and whether, anything goes live.</p></article>
+              <article class="a-card a-tilt"><span class="a-safe__no">03</span><h3>Off switch in one tap</h3><p>Pause or delete any bot instantly, and every intraday position squares off before the close.</p></article>
+            </div>
+          </section>
+
+          <!-- 9. Brokers -->
+          <section class="x-sec" id="brokers" aria-labelledby="brokers-h" style="gap: 24px">
+            <div class="x-sec__head x-rv">
+              <div class="a-head">
+                <span class="a-kicker">Broker connections</span>
+                <h2 class="a-h2" id="brokers-h"><span class="a-scr" data-scramble>Connect your accounts.</span></h2>
+              </div>
+              <p class="x-cap">Add several accounts per broker. Labels only; keys stay on your server.</p>
+            </div>
+            <div class="x-brokers x-rv" id="broker-grid"></div>
+          </section>
+
+          <!-- 10. Bots at a glance -->
+          <section class="x-sec" id="glance" aria-labelledby="glance-h" style="gap: 24px">
+            <div class="x-sec__head x-rv">
+              <div class="a-head"><span class="a-kicker">Your bots</span><h2 class="a-h2" id="glance-h">Your bots at a glance</h2></div>
+              <button class="x-btn" type="button" data-goto="bots">Open Bots</button>
+            </div>
+            <div id="home-bots">
+              <div class="x-panel x-empty"><p>No bots running. Connect a broker to start.</p><button class="x-btn x-btn--primary x-btn--sm" type="button" data-goto-anchor="brokers">Connect a broker</button></div>
+            </div>
+          </section>
+
+          <!-- 11. FAQ -->
+          <section class="x-sec" aria-labelledby="faq-h" style="gap: 32px">
+            <div class="a-head a-head--c x-rv"><span class="a-kicker">FAQ</span><h2 class="a-h2" id="faq-h">Questions traders ask</h2></div>
+            <div class="a-faq">
+              <details><summary>Is algo trading legal for retail traders in India?</summary><p>Yes. Under SEBI's retail algo framework (circular of 4 February 2025, applicable to all brokers from 1 April 2026), retail traders can automate through their SEBI-registered broker's API. Orders carry an exchange-issued algo tag and API access runs from a whitelisted static IP.</p></details>
+              <details><summary>Does Algora hold my money or place real orders today?</summary><p>No. Algora never holds funds. Bots currently run in paper mode only, so no real orders are sent. Live trading will route through your own broker account.</p></details>
+              <details><summary>Where are my API keys stored?</summary><p>Never on this page. Real API keys belong in your bot's own server environment. The web app only keeps account labels, bots and settings in your browser.</p></details>
+              <details><summary>What data does the backtester use?</summary><p>Your own candle CSV (datetime, open, high, low, close). It runs entirely in your browser and nothing is uploaded.</p></details>
+              <details><summary>Which brokers are supported?</summary><p>Zerodha, Upstox, Angel One, Dhan, Fyers, Groww, Kotak Securities, 5paisa, Alice Blue, Shoonya, Motilal Oswal and ICICI Direct.</p></details>
+            </div>
+          </section>
+
+          <!-- 12. Final CTA -->
+          <div class="a-final x-rv">
+            <span class="a-kicker" style="color: rgba(238,241,247,0.6)">Get started</span>
+            <h2 class="a-h2">Your first bot, <span class="a-grad">paper trading today.</span></h2>
+            <p>Build it, backtest it and watch it trade on live prices before a single rupee is at risk.</p>
+            <div class="a-ctas" style="justify-content: center">
+              <button class="x-btn x-btn--lg a-btn-glow a-mag" type="button" data-goto="bots">Build a bot free</button>
+              <button class="x-btn x-btn--lg a-btn-ghost a-mag" type="button" data-goto-anchor="brokers">Connect a broker</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= TAB: DASHBOARD (phase 2) ================= -->
+        <section class="x-tab" id="tab-dashboard" role="tabpanel" aria-label="Dashboard" hidden>
+          <div class="x-dash__top">
+            <span class="x-badge x-badge--paper">Paper mode · no real orders</span>
+            <div><p class="x-eyebrow">Dashboard</p><h1 class="x-h2">Paper trading</h1></div>
+          </div>
+
+          <!-- 1. Summary -->
+          <div class="x-kpis" role="list" aria-label="Paper trading summary">
+            <div class="x-kpi" role="listitem"><span class="x-kpi__label">Paper P&amp;L total</span><span class="x-kpi__fig">—</span><span class="x-kpi__sub">No data yet</span></div>
+            <div class="x-kpi" role="listitem"><span class="x-kpi__label">Today</span><span class="x-kpi__fig">—</span><span class="x-kpi__sub">No data yet</span></div>
+            <div class="x-kpi" role="listitem"><span class="x-kpi__label">Momentum book</span><span class="x-kpi__fig">—</span><span class="x-kpi__sub">No data yet</span></div>
+            <div class="x-kpi" role="listitem"><span class="x-kpi__label">Option spread</span><span class="x-kpi__fig">—</span><span class="x-kpi__sub">No data yet</span></div>
+          </div>
+
+          <!-- 2. Accounts -->
+          <section class="x-sec" aria-labelledby="dash-accts-h">
+            <div class="x-sec__head">
+              <div><p class="x-eyebrow">Accounts</p><h2 class="x-h2" id="dash-accts-h">Connected broker accounts</h2></div>
+            </div>
+            <div id="dash-accts">
+              <div class="x-panel x-empty"><p>No accounts connected yet</p><button class="x-btn x-btn--primary x-btn--sm" type="button" data-goto-anchor="brokers">Connect a broker</button></div>
+            </div>
+          </section>
+
+          <!-- 3. Today's trades -->
+          <section class="x-sec" aria-labelledby="dash-trades-h">
+            <div class="x-sec__head">
+              <div><p class="x-eyebrow">Intraday</p><h2 class="x-h2" id="dash-trades-h">Today's trades</h2></div>
+            </div>
+            <div class="x-grid2">
+              <div class="x-panel x-empty"><p>No trades yet. Trades appear here once a bot runs.</p></div>
+              <div class="x-panel">
+                <div class="x-subhead"><h3>P&amp;L by trade</h3><span class="x-cap">₹, losses left, gains right</span></div>
+                <div class="x-empty"><p>No data yet</p></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 4. Momentum holdings -->
+          <section class="x-sec" aria-labelledby="dash-mom-h">
+            <div class="x-sec__head">
+              <div><p class="x-eyebrow">Momentum book</p><h2 class="x-h2" id="dash-mom-h">Holdings</h2></div>
+            </div>
+            <div class="x-panel x-empty"><p>No holdings yet.</p></div>
+          </section>
+
+          <!-- 5. Bots -->
+          <section class="x-sec" aria-labelledby="dash-fcb-h">
+            <div class="x-sec__head">
+              <div><p class="x-eyebrow">Bots</p><h2 class="x-h2" id="dash-fcb-h">Your bots</h2></div>
+              <p class="x-cap" id="dash-bots-count" hidden></p>
+            </div>
+            <div id="dash-bots">
+              <div class="x-panel x-empty"><p>No bots running. Connect a broker to start.</p><button class="x-btn x-btn--primary x-btn--sm" type="button" data-goto-anchor="brokers">Connect a broker</button></div>
+            </div>
+          </section>
+
+          <p class="x-dash__note">NSE rules from 7 Dec 2026: F&amp;O until 3:45 pm; expiring index contracts stop at 3:30 pm. Bots square off at 3:15 pm.</p>
+        </section>
+
+        <!-- ================= TAB: BOTS (phase 3) ================= -->
+        <section class="x-tab" id="tab-bots" role="tabpanel" aria-label="Bots" hidden>
+          <div class="x-dash__top">
+            <span class="x-badge x-badge--paper">Paper mode · no real orders</span>
+            <div><p class="x-eyebrow">Bots</p><h1 class="x-h2">Build and manage bots</h1></div>
+          </div>
+
+          <!-- 1. Builder -->
+          <section class="x-sec" aria-labelledby="bot-new-h">
+            <div class="x-sec__head">
+              <div><p class="x-eyebrow">Builder</p><h2 class="x-h2" id="bot-new-h">Create bot</h2></div>
+            </div>
+            <form class="x-panel x-bf" id="bot-form" novalidate>
+              <div class="x-bf__grid">
+                <label class="x-field">Bot name <span class="x-hint">Optional</span><input id="bf-name" type="text" maxlength="40" placeholder="Auto from strategy and instrument" autocomplete="off" /></label>
+                <label class="x-field">Strategy
+                  <select id="bf-strategy">
+                    <option>First Candle Cross</option><option>Opening Range Breakout</option><option>Gap fade</option><option>Monthly option spread</option><option>Momentum</option>
+                  </select>
+                </label>
+                <label class="x-field">Instrument
+                  <select id="bf-inst">
+                    <option value="NIFTY">NIFTY</option><option value="BANKNIFTY">BANKNIFTY</option><option value="CRUDEOIL">CRUDEOIL · MCX</option><option value="GOLDM">GOLDM · MCX</option><option value="ICICIBANK">ICICIBANK</option><option value="HDFCBANK">HDFCBANK</option><option value="__other">Other stock…</option>
+                  </select>
+                </label>
+                <label class="x-field" id="bf-sym-wrap" hidden>Stock symbol<input id="bf-sym" type="text" maxlength="20" placeholder="e.g. RELIANCE" autocomplete="off" spellcheck="false" /></label>
+                <div class="x-field">
+                  <label for="bf-acct">Broker account</label>
+                  <select id="bf-acct" disabled><option>No accounts yet</option></select>
+                  <button class="x-link" type="button" id="bf-acct-link" data-goto-anchor="brokers">Connect a broker first</button>
+                </div>
+                <label class="x-field">Timeframe
+                  <select id="bf-tf"><option>5m</option><option selected>15m</option><option>30m</option></select>
+                </label>
+                <label class="x-field">Entry buffer %<input id="bf-buf" type="number" min="0" max="5" step="0.01" value="0.1" inputmode="decimal" /></label>
+                <div class="x-field">
+                  <span id="bf-exit-l">Exit mode</span>
+                  <div class="x-segctl" id="bf-exit" role="group" aria-labelledby="bf-exit-l">
+                    <button class="x-segbtn" type="button" data-exit="flip" aria-pressed="true">Flip only</button>
+                    <button class="x-segbtn" type="button" data-exit="target" aria-pressed="false">Target %</button>
+                    <button class="x-segbtn" type="button" data-exit="stop" aria-pressed="false">Stop %</button>
+                  </div>
+                </div>
+                <label class="x-field" id="bf-exitv-wrap" hidden><span id="bf-exitv-l">Target %</span><input id="bf-exitv" type="number" min="0.05" max="20" step="0.05" value="0.5" inputmode="decimal" /></label>
+                <label class="x-field">Square-off time <span class="x-hint" id="bf-sq-hint">Auto · NSE 15:15</span><input id="bf-sq" type="time" value="15:15" /></label>
+                <label class="x-field">Max entries per day<input id="bf-max" type="number" min="1" max="50" step="1" value="4" inputmode="numeric" /></label>
+                <label class="x-field">Quantity, lots<input id="bf-qty" type="number" min="1" max="500" step="1" value="1" inputmode="numeric" /></label>
+                <div class="x-field">
+                  <span id="bf-mode-l">Mode</span>
+                  <div class="x-segctl" role="group" aria-labelledby="bf-mode-l">
+                    <button class="x-segbtn" type="button" aria-pressed="true">Paper</button>
+                    <button class="x-segbtn" type="button" aria-pressed="false" disabled>Live</button>
+                  </div>
+                  <span class="x-hint">Live trading runs only from your bot on your own server.</span>
+                </div>
+              </div>
+              <div class="x-bf__foot">
+                <p class="x-cap" id="bf-msg" role="status"></p>
+                <button class="x-btn x-btn--primary" type="submit" id="bf-save">Save bot</button>
+              </div>
+            </form>
+          </section>
+
+          <!-- 2. List -->
+          <section class="x-sec" aria-labelledby="bot-list-h">
+            <div class="x-sec__head">
+              <div><p class="x-eyebrow">Your bots</p><h2 class="x-h2" id="bot-list-h">Saved bots</h2></div>
+              <p class="x-cap" id="bot-count" hidden></p>
+            </div>
+            <div id="bot-list">
+              <div class="x-panel x-empty"><p>No bots yet. Create your first one.</p></div>
+            </div>
+            <div class="x-data">
+              <p class="x-cap" id="bot-store-note">Bots stay in this session only.</p>
+              <div class="x-data__acts">
+                <button class="x-btn x-btn--sm" type="button" data-export>Export data</button>
+                <button class="x-btn x-btn--sm" type="button" data-import>Import data</button>
+                <button class="x-btn x-btn--sm x-btn--danger" type="button" data-clear>Clear all data</button>
+              </div>
+            </div>
+          </section>
+        </section>
+
+        <!-- ================= TAB: BACKTEST (phase 4) ================= -->
+        <section class="x-tab" id="tab-backtest" role="tabpanel" aria-label="Backtest and Paper Trade" hidden>
+          <div class="x-dash__top">
+            <span class="x-badge">Runs in your browser · nothing is uploaded</span>
+            <div><p class="x-eyebrow">Backtest</p><h1 class="x-h2">Backtest on your own candle data</h1></div>
+          </div>
+
+          <!-- 1. Data -->
+          <section class="x-sec" aria-labelledby="bt-data-h">
+            <div class="x-sec__head">
+              <div><p class="x-eyebrow">Data</p><h2 class="x-h2" id="bt-data-h">Candle file</h2></div>
+            </div>
+            <div class="x-panel x-bf">
+              <div class="x-bt-up">
+                <label class="x-btn x-btn--primary x-file">Choose CSV file<input id="bt-file" type="file" accept=".csv,text/csv,text/plain" /></label>
+                <span class="x-cap" id="bt-fname" role="status">No file chosen</span>
+              </div>
+              <div id="bt-empty">
+                <p>Upload candle data to run a backtest.</p>
+                <p class="x-bt-fmt">Format: datetime,open,high,low,close<br />2025-01-02 09:15,23500,23540,23480,23520</p>
+              </div>
+              <div class="x-kpis" id="bt-meta" role="list" aria-label="Loaded data" hidden>
+                <div class="x-kpi" role="listitem"><span class="x-kpi__label">Rows loaded</span><span class="x-kpi__fig" id="bt-rows">—</span><span class="x-kpi__sub" id="bt-skip"></span></div>
+                <div class="x-kpi" role="listitem"><span class="x-kpi__label">Date range</span><span class="x-kpi__fig x-kpi__fig--s" id="bt-range">—</span><span class="x-kpi__sub" id="bt-days"></span></div>
+                <div class="x-kpi" role="listitem"><span class="x-kpi__label">Timeframe</span><span class="x-kpi__fig" id="bt-tf">—</span><span class="x-kpi__sub">Detected from the data</span></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 2. Settings -->
+          <section class="x-sec" aria-labelledby="bt-set-h">
+            <div class="x-sec__head">
+              <div><p class="x-eyebrow">Settings</p><h2 class="x-h2" id="bt-set-h">Strategy and costs</h2></div>
+            </div>
+            <form class="x-panel x-bf" id="bt-form" novalidate>
+              <div class="x-bf__grid">
+                <label class="x-field">Strategy <span class="x-hint">Only strategy available for now</span>
+                  <select id="bt-strategy"><option>First Candle Cross</option></select>
+                </label>
+                <label class="x-field">Session start <span class="x-hint">First candle sets high and low</span><input id="bt-start" type="time" value="09:15" /></label>
+                <label class="x-field">Square-off time <span class="x-hint">NSE 15:15 · MCX 23:15</span><input id="bt-sq" type="time" value="15:15" /></label>
+                <label class="x-field">Entry buffer %<input id="bt-buf" type="number" min="0" max="5" step="0.01" value="0.1" inputmode="decimal" /></label>
+                <div class="x-field">
+                  <span id="bt-exit-l">Exit mode</span>
+                  <div class="x-segctl" id="bt-exit" role="group" aria-labelledby="bt-exit-l">
+                    <button class="x-segbtn" type="button" data-exit="flip" aria-pressed="true">Flip only</button>
+                    <button class="x-segbtn" type="button" data-exit="target" aria-pressed="false">Target %</button>
+                    <button class="x-segbtn" type="button" data-exit="stop" aria-pressed="false">Stop %</button>
+                  </div>
+                </div>
+                <label class="x-field" id="bt-exitv-wrap" hidden><span id="bt-exitv-l">Target %</span><input id="bt-exitv" type="number" min="0.05" max="20" step="0.05" value="0.5" inputmode="decimal" /></label>
+                <label class="x-field">Max entries per day<input id="bt-max" type="number" min="1" max="50" step="1" value="4" inputmode="numeric" /></label>
+                <label class="x-field">Lot size <span class="x-hint">Units per trade</span><input id="bt-lot" type="number" min="1" max="100000" step="1" value="75" inputmode="numeric" /></label>
+                <label class="x-field">Points-to-P&amp;L multiplier <span class="x-hint">Option delta</span><input id="bt-delta" type="number" min="0.01" max="1" step="0.05" value="0.5" inputmode="decimal" /></label>
+                <label class="x-field">Cost per round trip, ₹<input id="bt-cost" type="number" min="0" max="100000" step="1" value="60" inputmode="decimal" /></label>
+              </div>
+              <div class="x-bf__foot">
+                <p class="x-cap" id="bt-msg" role="status">Upload a candle file to run.</p>
+                <button class="x-btn x-btn--primary" type="submit" id="bt-run" disabled>Run backtest</button>
+              </div>
+            </form>
+          </section>
+
+          <!-- 3. Results -->
+          <section class="x-sec" id="bt-results" aria-labelledby="bt-res-h" hidden>
+            <div class="x-sec__head">
+              <div><p class="x-eyebrow">Results</p><h2 class="x-h2" id="bt-res-h">Backtest results</h2></div>
+              <p class="x-cap" id="bt-res-sub"></p>
+            </div>
+            <div class="x-kpis" id="bt-tiles" role="list" aria-label="Backtest summary"></div>
+            <div class="x-panel">
+              <div class="x-subhead"><h3>Equity curve</h3><span class="x-cap" id="bt-eq-cap"></span></div>
+              <div class="x-eq-wrap"><svg class="x-eq" id="bt-eq" viewBox="0 0 600 200" preserveAspectRatio="none" role="img" aria-label="Cumulative P&amp;L after each trade"></svg></div>
+            </div>
+            <div class="x-panel">
+              <div class="x-subhead"><h3>Trades</h3><button class="x-btn x-btn--sm" type="button" id="bt-csv">Download trades CSV</button></div>
+              <div class="x-scroll" tabindex="0" role="region" aria-label="Trades table">
+                <table class="x-tbl">
+                  <thead><tr><th scope="col">Date</th><th scope="col">Side</th><th scope="col">Entry</th><th scope="col">Exit</th><th scope="col">Reason</th><th scope="col" class="x-num">P&amp;L</th></tr></thead>
+                  <tbody id="bt-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+            <p class="x-cap">Estimate using delta × points, not real option premiums.</p>
+            <div class="x-bt-acts"><button class="x-btn x-btn--primary" type="button" id="bt-use">Use these settings</button></div>
+          </section>
+        </section>
+      </main>
+
+      <!-- ===== Footer (all tabs) ===== -->
+      <footer class="x-foot">
+        <div class="x-foot__brand">
+          <a class="x-brand" href="#" data-goto="home">
+            <svg class="x-mark" viewBox="0 0 32 32" aria-hidden="true">
+              <rect width="32" height="32" rx="7" fill="var(--x-accent)" />
+              <path d="M7 25 L16 6 L25 25" fill="none" stroke="#fff" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" />
+              <path d="M10.5 19.5 L14 16.5 L17 18.5 L21.5 14" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" />
+            </svg>
+            Algora
+          </a>
+          <p>Automated trading tools for Indian markets</p>
+        </div>
+        <div>
+          <h4>Product</h4>
+          <ul>
+            <li><a href="#" data-goto="home">Home</a></li>
+            <li><a href="#" data-goto="dashboard">Dashboard</a></li>
+            <li><a href="#" data-goto="bots">Bots</a></li>
+            <li><a href="#" data-goto="backtest">Backtest</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Company</h4>
+          <ul>
+            <li><button class="x-flink" type="button" data-info="about">About</button></li>
+            <li><a href="tel:+919019088160">Contact</a></li>
+            <li><button class="x-flink" type="button" data-info="privacy">Privacy</button></li>
+            <li><button class="x-flink" type="button" data-info="terms">Terms</button></li>
+          </ul>
+        </div>
+        <div class="x-foot__contact">
+          <h4>Contact</h4>
+          <ul>
+            <li><a class="x-mono" href="tel:+919019088160">+91 901 908 8160</a></li>
+            <li style="color: var(--x-muted)">Bengaluru, Karnataka, India</li>
+          </ul>
+        </div>
+        <div class="x-foot__legal">
+          <p>Trading in securities and derivatives involves risk. Backtest and paper results are estimates and don't guarantee future returns. Not investment advice.</p>
+          <p>© 2026 Algora</p>
+        </div>
+      </footer>
+
+      <!-- ===== Bottom tab bar (phones) ===== -->
+      <nav class="x-bottom" role="tablist" aria-label="Sections">
+        <button role="tab" data-tab="home" aria-selected="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5V20h-5v-6h-6v6H4z" /></svg>Home</button>
+        <button role="tab" data-tab="dashboard" aria-selected="false"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.5" /><rect x="13" y="4" width="7" height="4" rx="1.5" /><rect x="13" y="10" width="7" height="10" rx="1.5" /><rect x="4" y="13" width="7" height="7" rx="1.5" /></svg>Dashboard</button>
+        <button role="tab" data-tab="bots" aria-selected="false"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><rect x="5" y="8" width="14" height="11" rx="2" /><path d="M12 4v4M9 13h.01M15 13h.01M9.5 16h5" /></svg>Bots</button>
+        <button role="tab" data-tab="backtest" aria-selected="false"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16M5 16l4-5 4 3 6-8" /></svg>Backtest</button>
+      </nav>
+    </div>
+
+    <dialog class="x-modal" id="acct-modal" aria-labelledby="acct-title">
+      <form method="dialog" id="acct-form">
+        <div class="x-modal__head">
+          <span class="x-tile" id="acct-tile"></span>
+          <div><h2 id="acct-title">Add account</h2><p id="acct-sub">Label this account so you can tell it apart.</p></div>
+          <button class="x-icon-btn" type="button" data-close aria-label="Close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg></button>
+        </div>
+        <div class="x-modal__body">
+          <label class="x-field">Account label<input id="acct-label" type="text" maxlength="40" placeholder="e.g. Personal, HUF, Client 1" required autocomplete="off" /></label>
+          <div class="x-saved" id="acct-saved" hidden><span class="x-cap">Already added</span><ul></ul></div>
+          <p class="x-cap">Real API keys go in the bot's <span class="x-mono">.env</span> file, never on this page. <span id="acct-store-note">Labels stay in this session only.</span></p>
+          <div class="x-hero__ctas"><button class="x-btn x-btn--primary" type="submit">Add account</button><button class="x-btn" type="button" data-close>Done</button></div>
+          <div class="x-data__acts">
+            <button class="x-btn x-btn--sm" type="button" data-export>Export data</button>
+            <button class="x-btn x-btn--sm" type="button" data-import>Import data</button>
+            <button class="x-btn x-btn--sm x-btn--danger" type="button" data-clear>Clear all data</button>
+          </div>
+        </div>
+      </form>
+    </dialog>
+    <dialog class="x-modal" id="clear-modal" aria-labelledby="clear-title" aria-describedby="clear-desc">
+      <div class="x-modal__head">
+        <div><h2 id="clear-title">Clear all data?</h2><p id="clear-desc">Removes broker account labels, saved bots, backtest settings and the theme choice.</p></div>
+      </div>
+      <div class="x-modal__body">
+        <p class="x-cap">Export first if you want a backup. This can't be undone.</p>
+        <div class="x-hero__ctas"><button class="x-btn x-btn--danger" type="button" id="clear-yes">Clear all data</button><button class="x-btn" type="button" id="clear-no" autofocus>Cancel</button></div>
+      </div>
+    </dialog>
+    <input type="file" id="data-file" accept=".json,application/json" hidden />
+    <div class="x-toast" id="toast" role="status" aria-live="polite"></div>
+
+    <!-- Broker logos only (folded in at publish); its demo grid and trades are not used -->
+    <script src="algora-data.js"></script>
+    <script src="hark.js"></script>
+    <script>
+      (function () {
+        var $ = function (s, r) { return (r || document).querySelector(s); };
+        var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+        var root = document.documentElement;
+        var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        /* Toast */
+        var toastEl = $("#toast"), toastT;
+        function toast(msg) {
+          toastEl.textContent = msg; toastEl.classList.add("is-on");
+          clearTimeout(toastT); toastT = setTimeout(function () { toastEl.classList.remove("is-on"); }, 2600);
+        }
+
+        /* Storage: localStorage under "algora:", silently in-memory when blocked. Never holds keys or secrets. */
+        var PFX = "algora:";
+        var store = {
+          ok: (function () { try { var k = PFX + "__t"; localStorage.setItem(k, "1"); localStorage.removeItem(k); return true; } catch (e) { return false; } })(),
+          get: function (k) { try { var v = localStorage.getItem(PFX + k); return v == null ? null : JSON.parse(v); } catch (e) { return null; } },
+          set: function (k, v) { try { localStorage.setItem(PFX + k, JSON.stringify(v)); } catch (e) {} },
+          clear: function () { try { ["theme", "accounts", "bots", "backtest"].forEach(function (k) { localStorage.removeItem(PFX + k); }); } catch (e) {} }
+        };
+
+        /* 1. Theme */
+        var theme = "dark", themeBtn = $("#theme-toggle");
+        function applyTheme(t) {
+          theme = t; root.setAttribute("data-theme", t);
+          themeBtn.setAttribute("aria-label", t === "light" ? "Switch to dark theme" : "Switch to light theme");
+        }
+        function setTheme(t) { applyTheme(t); store.set("theme", t); mountAll(); }
+        themeBtn.addEventListener("click", function () { setTheme(theme === "light" ? "dark" : "light"); });
+
+        /* 2. Hero headline and rolling word */
+        var hero = $("#hero");
+        requestAnimationFrame(function () { setTimeout(function () { hero.classList.add("is-in"); }, 60); });
+        var roll = $(".x-roll__list");
+        if (roll && !reduce) {
+          var n = roll.children.length, idx = 0;
+          setInterval(function () {
+            idx++; roll.style.transition = ""; roll.style.transform = "translateY(" + (-1.06 * idx) + "em)";
+            if (idx === n - 1) setTimeout(function () { roll.style.transition = "none"; roll.style.transform = "translateY(0)"; idx = 0; }, 650);
+          }, 2400);
+        }
+        $$("[data-count]").forEach(function (b) {
+          var end = +b.getAttribute("data-count"); if (reduce) return;
+          var t0 = null; b.textContent = "0";
+          function step(t) { t0 = t0 || t; var p = Math.min((t - t0) / 1200, 1); b.textContent = Math.round(end * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(step); }
+          setTimeout(function () { requestAnimationFrame(step); }, 600);
+        });
+
+        /* Scroll reveal */
+        var io = "IntersectionObserver" in window ? new IntersectionObserver(function (es) {
+          es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("is-in"); io.unobserve(e.target); } });
+        }, { rootMargin: "0px 0px -8% 0px" }) : null;
+        function reveal(el) {
+          $$(":scope > *", el).forEach(function (c, i) { c.style.setProperty("--i", Math.min(i, 8)); });
+          if (io) io.observe(el); else el.classList.add("is-in");
+        }
+
+        /* 3. Tabs */
+        var bar = $(".x-tabs__bar");
+        function moveBar() {
+          var b = $('.x-tabs button[aria-selected="true"]');
+          if (!b || !bar) return;
+          bar.style.width = b.offsetWidth + "px"; bar.style.transform = "translateX(" + b.offsetLeft + "px)";
+        }
+        function go(tab, anchor) {
+          $$(".x-tab").forEach(function (s) { s.hidden = s.id !== "tab-" + tab; });
+          $$("[data-tab]").forEach(function (b) { b.setAttribute("aria-selected", b.getAttribute("data-tab") === tab ? "true" : "false"); });
+          moveBar();
+          var target = anchor && document.getElementById(anchor);
+          if (target) target.scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
+          else window.scrollTo({ top: 0, behavior: "auto" });
+        }
+        document.addEventListener("click", function (e) {
+          var t = e.target.closest("[data-tab],[data-goto],[data-goto-anchor],[data-open],[data-info]");
+          if (!t) return;
+          if (t.hasAttribute("data-tab")) go(t.getAttribute("data-tab"));
+          else if (t.hasAttribute("data-goto")) { e.preventDefault(); go(t.getAttribute("data-goto")); }
+          else if (t.hasAttribute("data-goto-anchor")) go("home", t.getAttribute("data-goto-anchor"));
+          else if (t.hasAttribute("data-open")) toast("Sign in arrives in a later phase.");
+          else toast({ about: "Algora: automated trading tools for Indian markets.", privacy: "Nothing you enter here leaves this browser.", terms: "Results are estimates, not investment advice." }[t.getAttribute("data-info")]);
+        });
+        window.addEventListener("resize", moveBar);
+
+        /* 4. Brokers */
+        var logos = window.ALGORA_LOGOS || {};
+        var brokers = [
+          ["zerodha", "Zerodha", "Kite Connect"], ["upstox", "Upstox", "Upstox API"], ["angelone", "Angel One", "SmartAPI"],
+          ["dhan", "Dhan", "DhanHQ API"], ["fyers", "Fyers", "Fyers API"], ["groww", "Groww", "Groww API"],
+          ["kotaksecurities", "Kotak Securities", "Kotak Neo API"], ["5paisa", "5paisa", "5paisa API"], ["aliceblueonline", "Alice Blue", "ANT API"],
+          ["shoonya", "Shoonya", "Finvasia API"], ["motilaloswal", "Motilal Oswal", "MO API"], ["icicidirect", "ICICI Direct", "Breeze API"]
+        ];
+        var accounts = {};
+        function tile(id, name, small) {
+          var s = document.createElement("span");
+          s.className = "x-tile" + (small ? " x-tile--s" : "");
+          if (logos[id]) { var im = document.createElement("img"); im.src = logos[id]; im.alt = ""; s.appendChild(im); }
+          else { s.classList.add("x-tile--mono"); s.textContent = name.split(" ").map(function (w) { return w[0]; }).join("").slice(0, 2).toUpperCase(); }
+          return s;
+        }
+        var track = $("#broker-marquee"), grid = $("#broker-grid");
+        [0, 1].forEach(function (k) {
+          brokers.forEach(function (b) {
+            var c = document.createElement("span"); c.className = "x-logo-chip";
+            if (k) c.setAttribute("aria-hidden", "true");
+            c.appendChild(tile(b[0], b[1], true)); c.appendChild(document.createTextNode(b[1])); track.appendChild(c);
+          });
+        });
+        brokers.forEach(function (b) {
+          accounts[b[0]] = [];
+          var a = document.createElement("article"); a.className = "x-broker"; a.id = "broker-" + b[0];
+          a.appendChild(tile(b[0], b[1]));
+          a.insertAdjacentHTML("beforeend", "<div><h3></h3><p></p></div><div class=\"x-broker__foot\"><span class=\"x-count\">0 accounts</span><button class=\"x-btn x-btn--sm\" type=\"button\">Connect</button></div><div class=\"x-chips\" style=\"grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px\" hidden></div>");
+          $("h3", a).textContent = b[1]; $("p", a).textContent = b[2];
+          $("button", a).addEventListener("click", function () { openModal(b); });
+          grid.appendChild(a);
+        });
+        function renderBroker(id) {
+          var a = $("#broker-" + id), list = accounts[id], chips = $(".x-chips", a);
+          $(".x-count", a).textContent = list.length + (list.length === 1 ? " account" : " accounts");
+          $("button", a).textContent = list.length ? "Add account" : "Connect";
+          chips.hidden = !list.length; chips.innerHTML = "";
+          list.forEach(function (l) { var p = document.createElement("span"); p.className = "pill"; p.textContent = l; chips.appendChild(p); });
+          renderDashAccts(); renderBotAccts();
+        }
+        /* Dashboard: accounts strip from the same in-memory store */
+        var dashEmpty = $("#dash-accts").innerHTML;
+        function renderDashAccts() {
+          var box = $("#dash-accts"), strip = document.createElement("div"); strip.className = "x-accts";
+          brokers.forEach(function (b) {
+            accounts[b[0]].forEach(function (l) {
+              var c = document.createElement("span"); c.className = "x-acct";
+              c.appendChild(tile(b[0], b[1], true));
+              var t = document.createElement("span"); t.textContent = b[1] + " "; var s = document.createElement("small"); s.textContent = l; t.appendChild(s);
+              c.appendChild(t); strip.appendChild(c);
+            });
+          });
+          if (!strip.children.length) { box.innerHTML = dashEmpty; return; }
+          box.innerHTML = ""; box.appendChild(strip);
+        }
+        var modal = $("#acct-modal"), form = $("#acct-form"), input = $("#acct-label"), current = null;
+        function renderSaved() {
+          var box = $("#acct-saved"), ul = $("ul", box), list = accounts[current[0]];
+          box.hidden = !list.length; ul.innerHTML = "";
+          list.forEach(function (l) { var li = document.createElement("li"); li.textContent = l; ul.appendChild(li); });
+        }
+        function openModal(b) {
+          current = b;
+          var t = $("#acct-tile"), nt = tile(b[0], b[1]); nt.id = "acct-tile"; t.replaceWith(nt);
+          $("#acct-title").textContent = "Add a " + b[1] + " account";
+          $("#acct-sub").textContent = b[2] + " · several accounts allowed";
+          input.value = ""; renderSaved();
+          if (modal.showModal) modal.showModal(); else modal.setAttribute("open", "");
+          input.focus();
+        }
+        function closeModal() { if (modal.close) modal.close(); else modal.removeAttribute("open"); }
+        $$("[data-close]", modal).forEach(function (b) { b.addEventListener("click", closeModal); });
+        modal.addEventListener("click", function (e) { if (e.target === modal) closeModal(); });
+        form.addEventListener("submit", function (e) {
+          e.preventDefault();
+          var v = input.value.trim(); if (!v || !current) return;
+          var list = accounts[current[0]];
+          if (list.indexOf(v) > -1) { toast("That label is already added."); return; }
+          list.push(v); saveAccounts(); renderBroker(current[0]); renderSaved(); input.value = ""; input.focus();
+          toast(v + " added to " + current[1]);
+        });
+
+        /* 5. TradingView widgets */
+        var TV = "https://s3.tradingview.com/external-embedding/embed-widget-";
+        var chartSym = "NSE:NIFTY", quoteGroup = "indices";
+        var groups = {
+          indices: ["Indices", [["NSE:NIFTY", "Nifty 50"], ["NSE:BANKNIFTY", "Bank Nifty"], ["NSE:CNXFINANCE", "Fin Nifty"], ["BSE:SENSEX", "Sensex"], ["NSE:CNXIT", "Nifty IT"], ["NSE:INDIAVIX", "India VIX"]]],
+          stocks: ["Nifty 50 stocks", [["NSE:RELIANCE", "Reliance"], ["NSE:HDFCBANK", "HDFC Bank"], ["NSE:ICICIBANK", "ICICI Bank"], ["NSE:INFY", "Infosys"], ["NSE:TCS", "TCS"], ["NSE:SBIN", "SBI"], ["NSE:ITC", "ITC"], ["NSE:LT", "L&T"], ["NSE:BHARTIARTL", "Bharti Airtel"], ["NSE:AXISBANK", "Axis Bank"]]],
+          mcx: ["MCX", [["MCX:CRUDEOIL1!", "Crude Oil"], ["MCX:GOLD1!", "Gold"], ["MCX:SILVER1!", "Silver"], ["MCX:NATURALGAS1!", "Natural Gas"], ["MCX:COPPER1!", "Copper"]]]
+        };
+        function mount(id, kind, cfg) {
+          var el = document.getElementById(id); if (!el) return;
+          el.innerHTML = "";
+          var box = document.createElement("div"); box.className = "tradingview-widget-container"; box.style.height = "100%";
+          var w = document.createElement("div"); w.className = "tradingview-widget-container__widget"; w.style.height = "100%";
+          box.appendChild(w);
+          var fail = function () {
+            if (el.querySelector("iframe")) return;
+            el.innerHTML = '<p class="x-cap" style="position:absolute;inset:0;display:grid;place-items:center">Chart unavailable here</p>';
+          };
+          var s = document.createElement("script");
+          s.src = TV + kind + ".js"; s.async = true; s.onerror = fail;
+          s.textContent = JSON.stringify(cfg);
+          box.appendChild(s); el.appendChild(box);
+          setTimeout(fail, 12000);
+        }
+        function mountChart() {
+          mount("tv-chart", "advanced-chart", { autosize: true, symbol: chartSym, interval: "D", timezone: "Asia/Kolkata", theme: theme, style: "1", locale: "en", allow_symbol_change: true, support_host: "https://www.tradingview.com" });
+        }
+        function mountQuotes() {
+          var g = groups[quoteGroup];
+          mount("tv-quotes", "market-quotes", { width: "100%", height: "100%", colorTheme: theme, isTransparent: true, locale: "en",
+            symbolsGroups: [{ name: g[0], symbols: g[1].map(function (s) { return { name: s[0], displayName: s[1] }; }) }] });
+        }
+        function mountAll() {
+          mount("tv-ticker", "ticker-tape", { symbols: groups.indices[1].slice(0, 4).concat(groups.mcx[1].slice(0, 2), groups.stocks[1].slice(0, 3)).map(function (s) { return { proName: s[0], title: s[1] }; }), colorTheme: theme, isTransparent: true, displayMode: "adaptive", locale: "en" });
+          mountChart(); mountQuotes();
+          mount("tv-hotlists", "hotlists", { exchange: "BSE", dateRange: "1D", showChart: true, colorTheme: theme, isTransparent: true, width: "100%", height: "100%", locale: "en" });
+          mount("tv-heatmap", "stock-heatmap", { dataSource: "SENSEX", grouping: "sector", blockSize: "market_cap_basic", blockColor: "change", hasTopBar: false, isZoomEnabled: true, colorTheme: theme, width: "100%", height: "100%", locale: "en" });
+          mount("tv-news", "timeline", { feedMode: "market", market: "india", displayMode: "regular", colorTheme: theme, isTransparent: true, width: "100%", height: "100%", locale: "en" });
+        }
+        function seg(groupSel, attr, cb) {
+          $$(groupSel + " button").forEach(function (b) {
+            b.addEventListener("click", function () {
+              $$(groupSel + " button").forEach(function (o) { o.setAttribute("aria-pressed", o === b ? "true" : "false"); });
+              cb(b.getAttribute(attr));
+            });
+          });
+        }
+        seg("#chart-pills", "data-sym", function (v) { chartSym = v; mountChart(); });
+        seg("#quotes-seg", "data-group", function (v) { quoteGroup = v; mountQuotes(); });
+        seg("#hot-seg", "data-list", function () {});
+
+        /* 6. Bots: builder and in-memory list */
+        var myBots = [], botSeq = 0, exitMode = "flip", sqTouched = false;
+        var MCX = { CRUDEOIL: 1, GOLDM: 1 };
+        var bf = $("#bot-form"), bfInst = $("#bf-inst"), bfSym = $("#bf-sym"), bfAcct = $("#bf-acct"), bfSq = $("#bf-sq"), bfMsg = $("#bf-msg");
+        function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+        function instVal() { return bfInst.value === "__other" ? bfSym.value.trim().toUpperCase() : bfInst.value; }
+        function autoSq() {
+          var mcx = !!MCX[bfInst.value];
+          $("#bf-sq-hint").textContent = "Auto · " + (mcx ? "MCX 23:15" : "NSE 15:15");
+          if (!sqTouched) bfSq.value = mcx ? "23:15" : "15:15";
+        }
+        bfInst.addEventListener("change", function () {
+          var other = bfInst.value === "__other";
+          $("#bf-sym-wrap").hidden = !other; if (other) bfSym.focus();
+          autoSq();
+        });
+        bfSq.addEventListener("input", function () { sqTouched = true; $("#bf-sq-hint").textContent = "Custom"; });
+        $$("#bf-exit .x-segbtn").forEach(function (b) {
+          b.addEventListener("click", function () {
+            exitMode = b.getAttribute("data-exit");
+            $$("#bf-exit .x-segbtn").forEach(function (o) { o.setAttribute("aria-pressed", o === b ? "true" : "false"); });
+            $("#bf-exitv-wrap").hidden = exitMode === "flip";
+            $("#bf-exitv-l").textContent = exitMode === "stop" ? "Stop %" : "Target %";
+          });
+        });
+        function renderBotAccts() {
+          var prev = bfAcct.value, n = 0; bfAcct.innerHTML = "";
+          brokers.forEach(function (b) {
+            accounts[b[0]].forEach(function (l) {
+              var o = el("option", null, b[1] + " · " + l); o.value = b[0] + "|" + l; bfAcct.appendChild(o); n++;
+            });
+          });
+          if (!n) bfAcct.appendChild(el("option", null, "No accounts yet"));
+          else if (prev) bfAcct.value = prev;
+          if (bfAcct.selectedIndex < 0) bfAcct.selectedIndex = 0;
+          bfAcct.disabled = !n; $("#bf-acct-link").hidden = !!n; $("#bf-save").disabled = !n;
+          bfMsg.textContent = n ? "" : "Add a broker account on Home to save a bot.";
+        }
+        function summary(b) {
+          var ex = b.exit === "flip" ? "Flip only" : (b.exit === "stop" ? "Stop " : "Target ") + b.exitv + "%";
+          return [["Timeframe", b.tf], ["Entry buffer", b.buf + "%"], ["Exit", ex], ["Square-off", b.sq], ["Max entries", b.max + " / day"], ["Quantity", b.qty + (b.qty === 1 ? " lot" : " lots")]];
+        }
+        function statusText(b) { return b.paused ? "Not running · Paused" : "Not running"; }
+        function renderBots() {
+          var box = $("#bot-list"), cnt = $("#bot-count");
+          cnt.hidden = !myBots.length; cnt.textContent = myBots.length + (myBots.length === 1 ? " bot" : " bots");
+          if (!myBots.length) { box.innerHTML = '<div class="x-panel x-empty"><p>No bots yet. Create your first one.</p></div>'; renderBotMini(); return; }
+          var grid = el("div", "x-bcards"); box.innerHTML = ""; box.appendChild(grid);
+          myBots.forEach(function (b) {
+            var c = el("article", "x-bcard"), h = el("div", "x-bcard__head"), t = el("div");
+            t.appendChild(el("h3", null, b.name)); t.appendChild(el("p", "x-bcard__sub", b.strategy + " · " + b.inst + " · " + b.acctLabel));
+            h.appendChild(t); h.appendChild(el("span", "x-badge x-badge--paper", "Paper")); c.appendChild(h);
+            var dl = el("dl");
+            summary(b).forEach(function (r) { dl.appendChild(el("dt", null, r[0])); dl.appendChild(el("dd", null, r[1])); });
+            c.appendChild(dl);
+            var f = el("div", "x-bcard__foot"), acts = el("div");
+            f.appendChild(el("span", "x-status", statusText(b)));
+            var p = el("button", "x-btn x-btn--sm", b.paused ? "Resume" : "Pause"); p.type = "button";
+            p.setAttribute("aria-label", (b.paused ? "Resume " : "Pause ") + b.name);
+            p.addEventListener("click", function () { b.paused = !b.paused; saveBots(); renderBots(); toast(b.name + (b.paused ? " paused" : " resumed")); });
+            var d = el("button", "x-btn x-btn--sm x-btn--danger", "Delete"); d.type = "button"; d.setAttribute("aria-label", "Delete " + b.name);
+            d.addEventListener("click", function () { myBots = myBots.filter(function (o) { return o !== b; }); saveBots(); renderBots(); toast(b.name + " deleted"); });
+            acts.appendChild(p); acts.appendChild(d); f.appendChild(acts); c.appendChild(f);
+            grid.appendChild(c);
+          });
+          renderBotMini();
+        }
+        /* Dashboard and Home: compact list from the same store */
+        var miniEmpty = { "#dash-bots": $("#dash-bots").innerHTML, "#home-bots": $("#home-bots").innerHTML };
+        function renderBotMini() {
+          var paused = myBots.filter(function (b) { return b.paused; }).length;
+          var dc = $("#dash-bots-count");
+          dc.hidden = !myBots.length;
+          dc.textContent = myBots.length + (myBots.length === 1 ? " bot" : " bots") + " · " + (myBots.length - paused) + " active · " + paused + " paused";
+          Object.keys(miniEmpty).forEach(function (sel) {
+            var box = $(sel);
+            if (!myBots.length) { box.innerHTML = miniEmpty[sel]; return; }
+            var panel = el("div", "x-panel"), ul = el("ul", "x-bots");
+            myBots.forEach(function (b) {
+              var li = el("li", "x-bot"), t = el("div");
+              t.appendChild(el("h3", null, b.name)); t.appendChild(el("p", null, b.strategy + " · " + b.inst + " · " + b.tf));
+              li.appendChild(t); li.appendChild(el("span", "x-badge x-badge--paper", "Paper"));
+              li.appendChild(el("span", "x-status", statusText(b))); ul.appendChild(li);
+            });
+            panel.appendChild(ul); box.innerHTML = ""; box.appendChild(panel);
+          });
+        }
+        bf.addEventListener("submit", function (e) {
+          e.preventDefault();
+          if (bfAcct.disabled) { bfMsg.textContent = "Add a broker account on Home to save a bot."; return; }
+          var inst = instVal();
+          if (!/^[A-Z0-9&-]{1,20}$/.test(inst)) { bfMsg.textContent = "Enter a valid stock symbol, e.g. RELIANCE."; bfSym.focus(); return; }
+          function num(id, lo, hi) { var v = parseFloat($(id).value); return isNaN(v) || v < lo || v > hi ? null : v; }
+          var buf = num("#bf-buf", 0, 5), max = num("#bf-max", 1, 50), qty = num("#bf-qty", 1, 500), exv = exitMode === "flip" ? 0 : num("#bf-exitv", 0.05, 20);
+          if (buf === null) { bfMsg.textContent = "Entry buffer must be 0 to 5%."; return; }
+          if (exv === null) { bfMsg.textContent = "Exit % must be 0.05 to 20."; return; }
+          if (max === null || max % 1) { bfMsg.textContent = "Max entries must be a whole number from 1 to 50."; return; }
+          if (qty === null || qty % 1) { bfMsg.textContent = "Quantity must be a whole number of lots."; return; }
+          if (!bfSq.value) { bfMsg.textContent = "Set a square-off time."; return; }
+          var opt = bfAcct.options[bfAcct.selectedIndex], strat = $("#bf-strategy").value;
+          var name = $("#bf-name").value.trim() || strat + " · " + inst;
+          myBots.push({ id: ++botSeq, name: name, strategy: strat, inst: inst, acctLabel: opt.textContent, tf: $("#bf-tf").value, buf: buf, exit: exitMode, exitv: exv, sq: bfSq.value, max: max, qty: qty, paused: false });
+          saveBots(); renderBots(); $("#bf-name").value = ""; bfMsg.textContent = "";
+          toast(name + " saved as a paper bot");
+        });
+        renderBotAccts(); autoSq();
+
+        /* 7. Backtest: First Candle Cross on the user's own CSV, all in this browser */
+        var bt = { rows: null, exit: "flip", last: null, trades: [] };
+        var btMsg = $("#bt-msg"), btRun = $("#bt-run");
+        var MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        function pad(n) { return (n < 10 ? "0" : "") + n; }
+        function hhmm(m) { return pad(Math.floor(m / 60)) + ":" + pad(m % 60); }
+        function toMin(v) { var p = (v || "").split(":"); return p.length < 2 ? null : +p[0] * 60 + +p[1]; }
+        function dayLabel(k) { var p = k.split("-"); return +p[2] + " " + MON[+p[1] - 1] + " " + p[0]; }
+        function mk(y, mo, d, h, mi, s) {
+          if (/pm/i.test(s) && h < 12) h += 12; if (/am/i.test(s) && h === 12) h = 0;
+          if (mo < 1 || mo > 12 || d < 1 || d > 31 || h > 23 || mi > 59) return null;
+          return { day: y + "-" + pad(mo) + "-" + pad(d), min: h * 60 + mi, t: Date.UTC(y, mo - 1, d) / 60000 + h * 60 + mi };
+        }
+        function parseWhen(s) {
+          s = s.trim(); var m;
+          if (/^\d{9,13}(\.\d+)?$/.test(s)) {
+            var d = new Date(+s * (s.split(".")[0].length > 11 ? 1 : 1000) + 330 * 60000); /* epoch to IST wall time */
+            return mk(d.getUTCFullYear(), d.getUTCMonth() + 1, d.getUTCDate(), d.getUTCHours(), d.getUTCMinutes(), "");
+          }
+          if ((m = s.match(/^(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})(?:[ T,]+(\d{1,2}):(\d{2}))?/))) return mk(+m[1], +m[2], +m[3], +(m[4] || 0), +(m[5] || 0), s);
+          if ((m = s.match(/^(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{4})(?:[ T,]+(\d{1,2}):(\d{2}))?/))) return mk(+m[3], +m[2], +m[1], +(m[4] || 0), +(m[5] || 0), s);
+          return null;
+        }
+        function parseCSV(text) {
+          var lines = text.replace(/^\uFEFF/, "").split(/\r?\n/).filter(function (l) { return l.trim(); });
+          if (lines.length < 2) return { err: "The file has no candle rows." };
+          var sep = lines[0].indexOf(",") > -1 ? "," : lines[0].indexOf(";") > -1 ? ";" : "\t";
+          var cells = function (l) { return l.split(sep).map(function (c) { return c.trim().replace(/^"|"$/g, ""); }); };
+          var head = cells(lines[0]).map(function (h) { return h.toLowerCase(); });
+          var col = function (names) { for (var i = 0; i < names.length; i++) { var k = head.indexOf(names[i]); if (k > -1) return k; } return -1; };
+          var iDT = col(["datetime", "date_time", "timestamp", "date"]), iTime = head.indexOf("datetime") > -1 ? -1 : col(["time"]);
+          var idx = { open: col(["open"]), high: col(["high"]), low: col(["low"]), close: col(["close"]) };
+          var miss = (iDT < 0 ? ["datetime"] : []).concat(Object.keys(idx).filter(function (k) { return idx[k] < 0; }));
+          if (miss.length) return { err: "Missing columns: " + miss.join(", ") + ". Expected datetime, open, high, low, close." };
+          var rows = [], skip = 0, seen = {};
+          for (var i = 1; i < lines.length; i++) {
+            var c = cells(lines[i]), w = parseWhen(c[iDT] + (iTime > -1 ? " " + (c[iTime] || "") : ""));
+            var o = parseFloat(c[idx.open]), h = parseFloat(c[idx.high]), lo = parseFloat(c[idx.low]), cl = parseFloat(c[idx.close]);
+            if (!w || [o, h, lo, cl].some(isNaN) || seen[w.t]) { skip++; continue; }
+            seen[w.t] = 1; w.o = o; w.h = h; w.l = lo; w.c = cl; rows.push(w);
+          }
+          if (!rows.length) return { err: "No valid candle rows found. Check the datetime format." };
+          rows.sort(function (a, b) { return a.t - b.t; });
+          var diffs = {}, best = 0, tf = 0;
+          for (var j = 1; j < rows.length; j++) if (rows[j].day === rows[j - 1].day) { var g = rows[j].t - rows[j - 1].t; diffs[g] = (diffs[g] || 0) + 1; if (diffs[g] > best) { best = diffs[g]; tf = g; } }
+          return { rows: rows, skip: skip, tf: tf };
+        }
+        $("#bt-file").addEventListener("change", function (e) {
+          var f = e.target.files && e.target.files[0]; if (!f) return;
+          var rd = new FileReader();
+          rd.onload = function () {
+            var r = parseCSV(String(rd.result));
+            $("#bt-results").hidden = true;
+            if (r.err) {
+              bt.rows = null; $("#bt-meta").hidden = true; $("#bt-empty").hidden = false;
+              $("#bt-fname").textContent = f.name + " · " + r.err; btRun.disabled = true; btMsg.textContent = "Upload a candle file to run."; return;
+            }
+            bt.rows = r.rows;
+            var days = 0, prev = ""; r.rows.forEach(function (x) { if (x.day !== prev) { days++; prev = x.day; } });
+            $("#bt-fname").textContent = f.name + " · read on this device";
+            $("#bt-rows").textContent = r.rows.length.toLocaleString("en-IN");
+            $("#bt-skip").textContent = r.skip ? r.skip + " rows skipped" : "All rows read";
+            $("#bt-range").textContent = dayLabel(r.rows[0].day) + " – " + dayLabel(r.rows[r.rows.length - 1].day);
+            $("#bt-days").textContent = days + (days === 1 ? " session" : " sessions");
+            $("#bt-tf").textContent = !r.tf ? "Daily" : r.tf % 60 ? r.tf + "m" : r.tf / 60 + "h";
+            $("#bt-empty").hidden = true; $("#bt-meta").hidden = false;
+            btRun.disabled = !r.tf;
+            btMsg.textContent = r.tf ? "Ready to run." : "First Candle Cross needs intraday candles.";
+          };
+          rd.readAsText(f);
+        });
+        $$("#bt-exit .x-segbtn").forEach(function (b) {
+          b.addEventListener("click", function () {
+            bt.exit = b.getAttribute("data-exit");
+            $$("#bt-exit .x-segbtn").forEach(function (o) { o.setAttribute("aria-pressed", o === b ? "true" : "false"); });
+            $("#bt-exitv-wrap").hidden = bt.exit === "flip";
+            $("#bt-exitv-l").textContent = bt.exit === "stop" ? "Stop %" : "Target %";
+          });
+        });
+        function runFCB(rows, s) {
+          var trades = [], n = rows.length, i = 0, day, pos;
+          var close = function (px, reason, r) {
+            var pts = (px - pos.p) * pos.dir;
+            trades.push({ day: day, side: pos.dir > 0 ? "Long" : "Short", inT: pos.t, inP: pos.p, outT: hhmm(r.min), outP: px, reason: reason, pts: pts, pnl: pts * s.delta * s.lot - s.cost });
+            pos = null;
+          };
+          while (i < n) {
+            day = rows[i].day; var j = i; while (j < n && rows[j].day === day) j++;
+            var c = rows.slice(i, j); i = j;
+            var k = 0; while (k < c.length && c[k].min < s.start) k++;
+            if (k >= c.length || c[k].min >= s.sq) continue;
+            var up = c[k].h * (1 + s.buf / 100), dn = c[k].l * (1 - s.buf / 100), prev = c[k].c, entries = 0, last = c[k];
+            pos = null;
+            for (var m = k + 1; m < c.length; m++) {
+              var r = c[m];
+              if (r.min >= s.sq) { if (pos) close(r.o, "Square-off", r); break; }
+              last = r;
+              if (pos && s.exit !== "flip") {
+                var tgt = s.exit === "target", lvl = pos.p * (1 + (tgt ? 1 : -1) * pos.dir * s.ev / 100);
+                var hit = (pos.dir > 0) === tgt ? r.h >= lvl : r.l <= lvl;
+                if (hit) close((pos.dir > 0) === tgt ? Math.max(lvl, r.o) : Math.min(lvl, r.o), tgt ? "Target" : "Stop", r);
+              }
+              var sig = r.c > up && prev <= up ? 1 : r.c < dn && prev >= dn ? -1 : 0;
+              if (sig && (!pos || pos.dir !== sig)) {
+                if (pos) close(r.c, "Flip", r);
+                if (entries < s.max) { pos = { dir: sig, p: r.c, t: hhmm(r.min) }; entries++; }
+              }
+              prev = r.c;
+            }
+            if (pos) close(last.c, "Square-off", last);
+          }
+          return trades;
+        }
+        var fmt0 = new Intl.NumberFormat("en-IN", { maximumFractionDigits: 0 });
+        var fmt2 = new Intl.NumberFormat("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        function rs(v, f) { return (v < 0 ? "−₹" : "₹") + (f || fmt0).format(Math.abs(v)); }
+        function tone(v) { return v > 0 ? "x-up" : v < 0 ? "x-down" : ""; }
+        function renderResults(trades, s) {
+          var wins = 0, gw = 0, gl = 0, eq = [0], peak = 0, dd = 0, best = null, worst = null;
+          trades.forEach(function (t) {
+            if (t.pnl > 0) { wins++; gw += t.pnl; } else gl -= t.pnl;
+            var v = eq[eq.length - 1] + t.pnl; eq.push(v); peak = Math.max(peak, v); dd = Math.max(dd, peak - v);
+            if (best === null || t.pnl > best) best = t.pnl; if (worst === null || t.pnl < worst) worst = t.pnl;
+          });
+          var net = eq[eq.length - 1], nT = trades.length;
+          var tiles = [
+            ["Trades", String(nT), ""], ["Win %", nT ? Math.round((wins / nT) * 100) + "%" : "—", wins + " winners"],
+            ["Net P&L", rs(net), "", tone(net)], ["Profit factor", gl ? (gw / gl).toFixed(2) : gw ? "∞" : "—", "Gross win ÷ gross loss"],
+            ["Max drawdown", dd ? "−₹" + fmt0.format(dd) : "₹0", "Peak to trough", dd ? "x-down" : ""],
+            ["Best trade", best === null ? "—" : rs(best), "", tone(best)], ["Worst trade", worst === null ? "—" : rs(worst), "", tone(worst)]
+          ];
+          var tb = $("#bt-tiles"); tb.innerHTML = "";
+          tiles.forEach(function (x) {
+            var d = el("div", "x-kpi"); d.setAttribute("role", "listitem");
+            d.appendChild(el("span", "x-kpi__label", x[0])); d.appendChild(el("span", "x-kpi__fig " + (x[3] || ""), x[1]));
+            if (x[2]) d.appendChild(el("span", "x-kpi__sub", x[2])); tb.appendChild(d);
+          });
+          $("#bt-res-sub").textContent = s.strategy + " · buffer " + s.buf + "% · " + (s.exit === "flip" ? "flip only" : s.exit + " " + s.ev + "%") + " · square-off " + s.sqT;
+          /* Equity curve */
+          var W = 600, H = 200, P = 6, lo = Math.min.apply(null, eq), hi = Math.max.apply(null, eq);
+          if (hi === lo) { hi += 1; lo -= 1; }
+          var X = function (i) { return eq.length > 1 ? (i / (eq.length - 1)) * W : 0; }, Y = function (v) { return P + ((hi - v) / (hi - lo)) * (H - 2 * P); };
+          var d = eq.map(function (v, i) { return (i ? "L" : "M") + X(i).toFixed(1) + " " + Y(v).toFixed(1); }).join(" ");
+          $("#bt-eq").innerHTML = '<path class="x-eq__area" d="' + d + " L" + X(eq.length - 1).toFixed(1) + " " + Y(0).toFixed(1) + " L0 " + Y(0).toFixed(1) + ' Z" />' +
+            '<line class="x-eq__zero" x1="0" x2="' + W + '" y1="' + Y(0).toFixed(1) + '" y2="' + Y(0).toFixed(1) + '" />' +
+            '<path class="x-eq__line" d="' + (eq.length > 1 ? d : "M0 " + Y(0) + " L" + W + " " + Y(0)) + '" />';
+          $("#bt-eq").setAttribute("aria-label", "Cumulative P&L over " + nT + " trades, ending at " + rs(net));
+          $("#bt-eq-cap").textContent = "High " + rs(Math.max.apply(null, eq)) + " · low " + rs(Math.min.apply(null, eq)) + " · ends " + rs(net);
+          /* Trades table */
+          var body = $("#bt-tbody"); body.innerHTML = "";
+          if (!nT) { var tr0 = el("tr"), td0 = el("td", "x-cap", "No trades for these settings."); td0.colSpan = 6; tr0.appendChild(td0); body.appendChild(tr0); }
+          var frag = document.createDocumentFragment();
+          trades.forEach(function (t) {
+            var tr = el("tr"), th = el("th", null, dayLabel(t.day)); th.scope = "row"; tr.appendChild(th);
+            tr.appendChild(el("td", t.side === "Long" ? "x-up" : "x-down", t.side));
+            [[t.inT, t.inP], [t.outT, t.outP]].forEach(function (p) { var td = el("td", "x-mono", p[0]); td.appendChild(el("small", null, fmt2.format(p[1]))); tr.appendChild(td); });
+            tr.appendChild(el("td", null, t.reason));
+            var pl = el("td", "x-num " + tone(t.pnl), rs(t.pnl, fmt2)); pl.appendChild(el("small", null, (t.pts >= 0 ? "+" : "−") + fmt2.format(Math.abs(t.pts)) + " pts")); tr.appendChild(pl);
+            frag.appendChild(tr);
+          });
+          body.appendChild(frag);
+          $("#bt-csv").hidden = !nT;
+          $("#bt-results").hidden = false;
+        }
+        $("#bt-form").addEventListener("submit", function (e) {
+          e.preventDefault();
+          if (!bt.rows) { btMsg.textContent = "Upload a candle file to run."; return; }
+          function num(id, lo, hi) { var v = parseFloat($(id).value); return isNaN(v) || v < lo || v > hi ? null : v; }
+          var s = { strategy: $("#bt-strategy").value, exit: bt.exit, start: toMin($("#bt-start").value), sqT: $("#bt-sq").value, sq: toMin($("#bt-sq").value),
+            buf: num("#bt-buf", 0, 5), ev: bt.exit === "flip" ? 0 : num("#bt-exitv", 0.05, 20), max: num("#bt-max", 1, 50),
+            lot: num("#bt-lot", 1, 100000), delta: num("#bt-delta", 0.01, 1), cost: num("#bt-cost", 0, 100000) };
+          var err = s.start === null || s.sq === null ? "Set the session start and square-off times." : s.sq <= s.start ? "Square-off must be after session start." :
+            s.buf === null ? "Entry buffer must be 0 to 5%." : s.ev === null ? "Exit % must be 0.05 to 20." : s.max === null || s.max % 1 ? "Max entries must be a whole number from 1 to 50." :
+            s.lot === null || s.lot % 1 ? "Lot size must be a whole number." : s.delta === null ? "Multiplier must be 0.01 to 1." : s.cost === null ? "Cost must be 0 or more." : "";
+          if (err) { btMsg.textContent = err; return; }
+          bt.trades = runFCB(bt.rows, s); bt.last = s;
+          renderResults(bt.trades, s);
+          btMsg.textContent = bt.trades.length + (bt.trades.length === 1 ? " trade" : " trades") + " simulated.";
+          $("#bt-results").scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
+        });
+        $("#bt-csv").addEventListener("click", function () {
+          if (!bt.trades.length) return;
+          var lines = ["date,side,entry_time,entry_price,exit_time,exit_price,reason,points,pnl_inr"].concat(bt.trades.map(function (t) {
+            return [t.day, t.side, t.inT, t.inP.toFixed(2), t.outT, t.outP.toFixed(2), t.reason, t.pts.toFixed(2), t.pnl.toFixed(2)].join(",");
+          }));
+          var url = URL.createObjectURL(new Blob([lines.join("\n") + "\n"], { type: "text/csv" }));
+          var a = document.createElement("a"); a.href = url; a.download = "algora-backtest-trades.csv";
+          document.body.appendChild(a); a.click(); a.remove();
+          setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+        });
+        $("#bt-use").addEventListener("click", function () {
+          var s = bt.last; if (!s) return;
+          $("#bf-strategy").value = s.strategy;
+          $("#bf-buf").value = s.buf;
+          var eb = $('#bf-exit [data-exit="' + s.exit + '"]'); if (eb) eb.click();
+          if (s.exit !== "flip") $("#bf-exitv").value = s.ev;
+          bfSq.value = s.sqT; bfSq.dispatchEvent(new Event("input"));
+          $("#bf-max").value = s.max;
+          go("bots", "bot-new-h");
+          toast("Backtest settings copied to Create bot");
+        });
+
+        /* 8. Saved data: restore, export, import, clear */
+        var BT_IDS = { strategy: "#bt-strategy", start: "#bt-start", sq: "#bt-sq", buf: "#bt-buf", exitv: "#bt-exitv", max: "#bt-max", lot: "#bt-lot", delta: "#bt-delta", cost: "#bt-cost" };
+        var BT_RANGE = { buf: [0, 5], exitv: [0.05, 20], max: [1, 50], lot: [1, 100000], delta: [0.01, 1], cost: [0, 100000] };
+        var TIME = /^([01]\d|2[0-3]):[0-5]\d$/;
+        function isNum(v, lo, hi) { return typeof v === "number" && isFinite(v) && v >= lo && v <= hi; }
+        function cleanLabel(v) { return typeof v === "string" && v.trim() ? v.trim().slice(0, 40) : null; }
+        function cleanAccounts(o) {
+          var out = {}; if (!o || typeof o !== "object") o = {};
+          brokers.forEach(function (b) {
+            var seen = {}; out[b[0]] = (Array.isArray(o[b[0]]) ? o[b[0]] : []).map(cleanLabel).filter(function (l) { if (!l || seen[l]) return false; seen[l] = 1; return true; }).slice(0, 50);
+          });
+          return out;
+        }
+        var STRATS = $$("#bf-strategy option").map(function (o) { return o.value; });
+        function cleanBot(b) {
+          if (!b || typeof b !== "object") return null;
+          var ok = typeof b.name === "string" && b.name.trim() && STRATS.indexOf(b.strategy) > -1 && typeof b.inst === "string" && /^[A-Z0-9&-]{1,20}$/.test(b.inst) &&
+            typeof b.acctLabel === "string" && ["5m", "15m", "30m"].indexOf(b.tf) > -1 && isNum(b.buf, 0, 5) && ["flip", "target", "stop"].indexOf(b.exit) > -1 &&
+            (b.exit === "flip" || isNum(b.exitv, 0.05, 20)) && typeof b.sq === "string" && TIME.test(b.sq) && isNum(b.max, 1, 50) && b.max % 1 === 0 && isNum(b.qty, 1, 500) && b.qty % 1 === 0;
+          if (!ok) return null;
+          return { name: b.name.trim().slice(0, 80), strategy: b.strategy, inst: b.inst, acctLabel: b.acctLabel.slice(0, 100), tf: b.tf, buf: b.buf, exit: b.exit, exitv: b.exit === "flip" ? 0 : b.exitv, sq: b.sq, max: b.max, qty: b.qty, paused: b.paused === true };
+        }
+        function botKey(b) { return [b.name, b.strategy, b.inst, b.acctLabel, b.tf, b.buf, b.exit, b.exitv, b.sq, b.max, b.qty].join("|"); }
+        function cleanBt(s) {
+          var out = {}; if (!s || typeof s !== "object") return out;
+          if (STRATS.indexOf(s.strategy) > -1 && $$("#bt-strategy option").some(function (o) { return o.value === s.strategy; })) out.strategy = s.strategy;
+          ["start", "sq"].forEach(function (k) { if (typeof s[k] === "string" && TIME.test(s[k])) out[k] = s[k]; });
+          Object.keys(BT_RANGE).forEach(function (k) { var v = typeof s[k] === "string" ? parseFloat(s[k]) : s[k]; if (isNum(v, BT_RANGE[k][0], BT_RANGE[k][1])) out[k] = String(v); });
+          if (["flip", "target", "stop"].indexOf(s.exit) > -1) out.exit = s.exit;
+          return out;
+        }
+        function saveAccounts() { store.set("accounts", accounts); }
+        function saveBots() { store.set("bots", myBots.map(function (b) { var c = cleanBot(b); return c; }).filter(Boolean)); }
+        function btSettings() { var s = { exit: bt.exit }; Object.keys(BT_IDS).forEach(function (k) { s[k] = $(BT_IDS[k]).value; }); return s; }
+        function saveBt() { store.set("backtest", cleanBt(btSettings())); }
+        function applyBt(s) {
+          Object.keys(BT_IDS).forEach(function (k) { if (s[k] != null) $(BT_IDS[k]).value = s[k]; });
+          if (s.exit) { var eb = $('#bt-exit [data-exit="' + s.exit + '"]'); if (eb) eb.click(); }
+        }
+        function addBots(list) {
+          var have = {}, n = 0; myBots.forEach(function (b) { have[botKey(b)] = 1; });
+          (Array.isArray(list) ? list : []).slice(0, 200).forEach(function (raw) {
+            var b = cleanBot(raw); if (!b || have[botKey(b)]) return;
+            have[botKey(b)] = 1; b.id = ++botSeq; myBots.push(b); n++;
+          });
+          return n;
+        }
+        function mergeAccounts(o) {
+          var src = cleanAccounts(o), n = 0;
+          brokers.forEach(function (b) { src[b[0]].forEach(function (l) { if (accounts[b[0]].indexOf(l) < 0 && accounts[b[0]].length < 50) { accounts[b[0]].push(l); n++; } }); });
+          return n;
+        }
+        function renderAll() { brokers.forEach(function (b) { renderBroker(b[0]); }); renderBots(); if (current && modal.open) renderSaved(); }
+
+        /* Restore */
+        var st = store.get("theme"); if (st === "dark" || st === "light") applyTheme(st);
+        mergeAccounts(store.get("accounts"));
+        addBots(store.get("bots"));
+        applyBt(cleanBt(store.get("backtest")));
+        renderAll();
+        if (store.ok) {
+          $("#bot-store-note").textContent = "Saved in this browser. API keys are never stored.";
+          $("#acct-store-note").textContent = "Labels are saved in this browser.";
+        }
+        $("#bt-form").addEventListener("input", saveBt);
+        $("#bt-form").addEventListener("change", saveBt);
+        $("#bt-exit").addEventListener("click", saveBt);
+
+        /* Export */
+        function exportData() {
+          var data = { app: "algora", version: 1, exportedAt: new Date().toISOString(), theme: theme, accounts: cleanAccounts(accounts),
+            bots: myBots.map(cleanBot).filter(Boolean), backtest: cleanBt(btSettings()) };
+          var url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2) + "\n"], { type: "application/json" }));
+          var a = document.createElement("a"); a.href = url; a.download = "algora-backup.json";
+          document.body.appendChild(a); a.click(); a.remove();
+          setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+          toast("Backup downloaded");
+        }
+        /* Import: validate, then merge */
+        var dataFile = $("#data-file");
+        dataFile.addEventListener("change", function () {
+          var f = dataFile.files && dataFile.files[0]; dataFile.value = ""; if (!f) return;
+          if (f.size > 1048576) { toast("That file is too large to be an Algora backup."); return; }
+          var rd = new FileReader();
+          rd.onload = function () {
+            var d = null; try { d = JSON.parse(String(rd.result)); } catch (e) {}
+            if (!d || typeof d !== "object" || Array.isArray(d) || (d.app !== "algora" && !("accounts" in d || "bots" in d))) { toast("That file isn't an Algora backup."); return; }
+            var na = mergeAccounts(d.accounts), nb = addBots(d.bots), bs = cleanBt(d.backtest);
+            if (Object.keys(bs).length) { applyBt(bs); saveBt(); }
+            if ((d.theme === "dark" || d.theme === "light") && d.theme !== theme) setTheme(d.theme);
+            saveAccounts(); saveBots(); renderAll();
+            toast(na || nb ? "Imported " + na + (na === 1 ? " account" : " accounts") + " and " + nb + (nb === 1 ? " bot" : " bots") : "Nothing new to import");
+          };
+          rd.onerror = function () { toast("Couldn't read that file."); };
+          rd.readAsText(f);
+        });
+        /* Clear, after a confirm dialog */
+        var clearModal = $("#clear-modal");
+        function closeClear() { if (clearModal.close) clearModal.close(); else clearModal.removeAttribute("open"); }
+        $("#clear-no").addEventListener("click", closeClear);
+        clearModal.addEventListener("click", function (e) { if (e.target === clearModal) closeClear(); });
+        $("#clear-yes").addEventListener("click", function () {
+          brokers.forEach(function (b) { accounts[b[0]] = []; });
+          myBots = [];
+          Object.keys(BT_IDS).forEach(function (k) { var f = $(BT_IDS[k]); if (f.tagName === "SELECT") f.selectedIndex = 0; else f.value = f.defaultValue; });
+          var fb = $('#bt-exit [data-exit="flip"]'); if (fb) fb.click();
+          if (theme !== "dark") setTheme("dark");
+          store.clear(); renderAll(); closeClear();
+          toast("All saved data cleared");
+        });
+        document.addEventListener("click", function (e) {
+          var t = e.target.closest("[data-export],[data-import],[data-clear]"); if (!t) return;
+          if (t.hasAttribute("data-export")) exportData();
+          else if (t.hasAttribute("data-import")) dataFile.click();
+          else if (clearModal.showModal) clearModal.showModal(); else clearModal.setAttribute("open", "");
+        });
+
+        $$(".x-rv").forEach(reveal);
+        mountAll(); moveBar();
+      })();
+    </script>
+    <script src="algora-fx.js"></script>
+  </body>
+</html>
