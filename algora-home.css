@@ -163,8 +163,7 @@ body:has(#tab-home:not([hidden])) .x-foot { font-size: 14px; }
 .ed-strip .x-marquee { border: 0; padding-block: 18px; }
 .ed-strip .x-marquee__track { animation-duration: 70s; gap: 44px; }
 #tab-home .x-logo-chip { color: var(--x-text); font: 500 14px/1 var(--ed-display); letter-spacing: -0.01em; }
-#tab-home .x-logo-chip .x-tile { border-radius: 3px; filter: grayscale(1); opacity: 0.85; transition: filter 200ms, opacity 200ms; }
-#tab-home .x-logo-chip:hover .x-tile { filter: none; opacity: 1; }
+#tab-home .x-logo-chip .x-tile { border-radius: 3px; }
 
 /* ----- 3. Pipeline ----- */
 .ed-pipe { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--x-text); }
