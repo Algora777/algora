@@ -341,6 +341,7 @@
         .x-marquee__track [aria-hidden="true"] { display: none; }
       }
     </style>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
     <link rel="stylesheet" href="algora-home.css" />
   </head>
   <body>
@@ -378,166 +379,241 @@
       <main class="main">
         <!-- ================= TAB: HOME ================= -->
         <section class="x-tab" id="tab-home" role="tabpanel" aria-label="Home">
-          <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-            <defs>
-              <linearGradient id="a-sg" x1="0" x2="1"><stop offset="0" stop-color="#7fb0ff" /><stop offset="0.5" stop-color="#b69cff" /><stop offset="1" stop-color="#5eead4" /></linearGradient>
-              <linearGradient id="a-sa" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#5eead4" stop-opacity="0.28" /><stop offset="1" stop-color="#5eead4" stop-opacity="0" /></linearGradient>
-              <linearGradient id="a-sa2" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#2f6feb" stop-opacity="0.22" /><stop offset="1" stop-color="#2f6feb" stop-opacity="0" /></linearGradient>
-            </defs>
-          </svg>
 
           <!-- 1. Hero -->
           <div class="a-hero" id="hero">
-            <div class="a-hero__bg" aria-hidden="true">
-              <img class="a-hero__img" src="algora_hero.png" alt="" />
-              <span class="a-blob a-blob--1"></span><span class="a-blob a-blob--2"></span><span class="a-blob a-blob--3"></span>
-              <div class="a-gridbg"></div>
-              <canvas id="a-candles"></canvas>
-            </div>
-            <div class="a-hero__copy">
-              <span class="a-pillnew"><b>NEW</b> Paper mode for every bot, free while in beta</span>
-              <h1 aria-label="Automate trading with your own strategies">
-                <span class="x-line" aria-hidden="true"><span style="--i: 0">Automate trading</span></span>
-                <span class="x-line" aria-hidden="true"><span style="--i: 1">with your own</span></span>
-                <span class="x-line" aria-hidden="true"><span style="--i: 2"><span class="x-roll"><span class="x-roll__list"><span>strategies</span><span>indicators</span><span>rules</span><span>edge</span><span>strategies</span></span></span></span></span>
-              </h1>
-              <p class="a-hero__sub">Build, backtest, paper trade and deploy bots on Nifty, BankNifty, stocks and MCX, connected to your own broker.</p>
-              <div class="a-ctas">
-                <button class="x-btn x-btn--lg a-btn-glow a-mag" type="button" data-goto="bots">Build your first bot</button>
-                <button class="x-btn x-btn--lg a-btn-ghost a-mag" type="button" data-goto="backtest">
-                  Run a backtest
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
-                </button>
+            <div class="ed-hero__in">
+              <div class="ed-hero__meta">
+                <span>Algora</span>
+                <span>No-code trading bots for NSE, NFO and MCX</span>
+                <span class="ed-hero__clock">IST <b id="ed-ist">--:--:--</b></span>
               </div>
-              <div class="a-trust">
-                <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg>No code needed</span>
-                <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg>Funds stay with your broker</span>
-                <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg>API keys never touch this page</span>
-              </div>
-            </div>
-
-            <div class="a-console" aria-label="Example bot console, simulated">
-              <div class="a-console__in">
-                <div class="a-console__bar"><i></i><i></i><i></i><span>algora://bots/fcc-nifty-15m</span><em>PAPER</em></div>
-                <div class="a-console__body">
-                  <div class="a-console__top">
-                    <div><h3>First Candle Cross · NIFTY</h3><p>15m · buffer 0.1% · square-off 15:15</p></div>
-                    <span class="a-live">Running</span>
+              <div class="ed-hero__grid">
+                <div class="ed-hero__side">
+                  <h1 class="ed-h1">Your trading rules, running on your broker. <span>No code.</span></h1>
+                  <p class="ed-hero__sub">Write entries, exits and square-off times for Nifty, BankNifty, stocks and MCX. Test them on your own candles, paper trade on live prices, then route orders through Zerodha, Upstox, Angel One, Dhan or Fyers.</p>
+                  <div class="ed-ctas">
+                    <button class="ed-btn ed-btn--solid" type="button" data-goto="bots">Build a bot</button>
+                    <button class="ed-btn ed-btn--line" type="button" data-goto="backtest">Run a backtest</button>
                   </div>
-                  <div class="a-console__kpis">
-                    <div><small>Paper P&amp;L</small><b id="a-pnl" class="x-up">₹0</b></div>
-                    <div><small>Trades</small><b id="a-trades">0</b></div>
-                    <div><small>Win rate</small><b id="a-win">—</b></div>
-                  </div>
-                  <svg class="a-spark" id="a-spark" viewBox="0 0 400 110" preserveAspectRatio="none" aria-hidden="true"><path class="a-spark__area" /><path class="a-spark__line" /></svg>
-                  <ul class="a-log" id="a-log" aria-hidden="true"></ul>
-                  <p class="a-console__note">Simulated demo · not real results</p>
+                  <dl class="ed-facts">
+                    <div><dt>Brokers</dt><dd>12</dd></div>
+                    <div><dt>Segments</dt><dd>NSE · NFO · MCX</dd></div>
+                    <div><dt>Paper trading</dt><dd>₹0</dd></div>
+                    <div><dt>Live orders</dt><dd>In development</dd></div>
+                  </dl>
                 </div>
+
+                <figure class="ed-app" aria-label="Strategy builder and backtest for a First Candle Cross bot on NIFTY. All figures simulated.">
+                  <div class="ed-app__bar">
+                    <span class="ed-app__crumb">Bots <i>/</i> <b>fcc-nifty-15m</b> <i>/</i> Backtest</span>
+                    <span class="ed-app__tabs" aria-hidden="true"><span>Rules</span><span class="is-on">Backtest</span><span>Paper</span></span>
+                    <span class="ed-sim">Simulated</span>
+                  </div>
+                  <div class="ed-app__body">
+                    <div class="ed-app__rules">
+                      <p class="ed-app__label">Rules</p>
+                      <p class="ed-app__strat">First Candle Cross</p>
+                      <table class="ed-kv">
+                        <tbody>
+                          <tr><th scope="row">Instrument</th><td class="m">NIFTY FUT</td></tr>
+                          <tr><th scope="row">Timeframe</th><td class="m">15m</td></tr>
+                          <tr><th scope="row">Entry</th><td class="m">close &gt; FC high +0.10%</td></tr>
+                          <tr><th scope="row">Target</th><td class="m">0.60%</td></tr>
+                          <tr><th scope="row">Stop</th><td class="m">0.35%</td></tr>
+                          <tr><th scope="row">Max entries</th><td class="m">4 / day</td></tr>
+                          <tr><th scope="row">Square-off</th><td class="m">15:15 IST</td></tr>
+                          <tr><th scope="row">Size</th><td class="m">1 lot · 75</td></tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="ed-app__main">
+                      <div class="ed-kpis">
+                        <div><small>Net P&amp;L</small><b class="x-up">₹48,210</b></div>
+                        <div><small>Trades</small><b>126</b></div>
+                        <div><small>Win rate</small><b>52.4%</b></div>
+                        <div><small>Max drawdown</small><b class="x-down">−₹12,460</b></div>
+                      </div>
+                      <div class="ed-eq">
+                        <svg id="ed-eq" viewBox="0 0 600 200" preserveAspectRatio="none" aria-hidden="true">
+                          <g class="ed-eq__grid"></g>
+                          <path class="ed-eq__area" />
+                          <path class="ed-eq__line" pathLength="1" />
+                        </svg>
+                        <div class="ed-eq__x" aria-hidden="true"><span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span></div>
+                      </div>
+                      <table class="ed-trades">
+                        <thead><tr><th>Date</th><th>Side</th><th class="n">Entry</th><th class="n">Exit</th><th class="n">P&amp;L</th></tr></thead>
+                        <tbody>
+                          <tr><td>27 Jun 09:45</td><td><span class="ed-side">Long</span></td><td class="n">24,118.40</td><td class="n">24,262.10</td><td class="n x-up">+₹10,778</td></tr>
+                          <tr><td>26 Jun 10:00</td><td><span class="ed-side ed-side--s">Short</span></td><td class="n">24,031.75</td><td class="n">24,115.85</td><td class="n x-down">−₹6,308</td></tr>
+                          <tr><td>25 Jun 09:30</td><td><span class="ed-side">Long</span></td><td class="n">23,964.20</td><td class="n">24,037.90</td><td class="n x-up">+₹5,528</td></tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <div class="ed-tape" aria-label="Simulated price feed">
+                    <span class="ed-tape__tag">Sim feed</span>
+                    <div class="ed-tape__win"><div class="ed-tape__row" id="ed-tape"></div></div>
+                    <span class="ed-tape__time" id="ed-tape-t">--:--:--</span>
+                  </div>
+                  <figcaption class="ed-app__cap">Simulated data for illustration. Not a backtest result or a forecast.</figcaption>
+                </figure>
               </div>
-              <div class="a-float a-float--1" aria-hidden="true">Square-off in<b id="a-sq">—</b></div>
-              <div class="a-float a-float--2" aria-hidden="true">Signal<b class="x-up">LONG ▲ NIFTY</b></div>
             </div>
           </div>
 
-          <!-- 2. Broker logos -->
-          <div class="a-strip">
-            <p>Connects to India's leading brokers</p>
+          <!-- 2. Broker strip -->
+          <div class="ed-strip">
+            <p class="ed-strip__label">Orders route through your own broker</p>
             <div class="x-marquee" aria-label="Supported brokers"><div class="x-marquee__track" id="broker-marquee"></div></div>
           </div>
 
-          <!-- 3. Stats -->
-          <div class="a-stats x-rv" role="list">
-            <div class="a-stat" role="listitem"><b><span data-count="12">12</span></b><span>Broker APIs supported</span></div>
-            <div class="a-stat" role="listitem"><b><span data-count="5">5</span></b><span>Strategy templates</span></div>
-            <div class="a-stat" role="listitem"><b><span data-count="3">3</span></b><span>Segments: NSE, NFO, MCX</span></div>
-            <div class="a-stat" role="listitem"><b>₹<span data-count="0">0</span></b><span>To build, backtest and paper trade</span></div>
-          </div>
-
-          <!-- 4. How it works -->
-          <section class="x-sec" aria-labelledby="how-h" style="gap: 40px">
-            <div class="a-head x-rv">
-              <span class="a-kicker">How it works</span>
-              <h2 class="a-h2" id="how-h"><span class="a-scr" data-scramble>Idea to running bot</span> <span class="a-grad">in four steps.</span></h2>
-              <p class="a-lead">Every bot moves through the same pipeline, so nothing reaches your broker before you've seen how it behaves.</p>
-            </div>
-            <div class="a-steps" id="a-steps">
-              <div class="a-step"><span class="a-step__dot">01</span><h3>Build</h3><p>Pick a strategy, an instrument and your exits. No code, every rule visible.</p><button class="x-link" type="button" data-goto="bots">Open builder →</button></div>
-              <div class="a-step"><span class="a-step__dot">02</span><h3>Backtest</h3><p>Replay it on your own candle data, with costs, drawdown and every trade listed.</p><button class="x-link" type="button" data-goto="backtest">Run a backtest →</button></div>
-              <div class="a-step"><span class="a-step__dot">03</span><h3>Paper trade</h3><p>Let it run on live prices with no real orders, and watch P&amp;L on your dashboard.</p><button class="x-link" type="button" data-goto="dashboard">See dashboard →</button></div>
-              <div class="a-step"><span class="a-step__dot">04</span><h3>Go live <span class="a-soon">SOON</span></h3><p>Orders go through your own broker's official API. Pause or exit any time.</p><button class="x-link" type="button" data-goto-anchor="brokers">Connect a broker →</button></div>
-            </div>
+          <!-- 3. How it works -->
+          <section class="ed-sec ed-sec--side" aria-labelledby="how-h">
+            <header class="ed-head">
+              <p class="ed-num"><b>01</b> / Pipeline</p>
+              <h2 class="ed-h2" id="how-h">Four stages, always in this order.</h2>
+              <p class="ed-lead">A bot is backtested and paper traded before it can place a real order. You can stop at any stage.</p>
+            </header>
+            <ol class="ed-pipe" id="a-steps">
+              <li>
+                <span class="ed-pipe__n">01</span>
+                <div><h3>Build</h3><p>Pick a template, an instrument, a timeframe and your exits. Every rule is a line you can read back.</p></div>
+                <span class="ed-pipe__st">Available</span>
+                <button class="x-link" type="button" data-goto="bots">Open builder</button>
+              </li>
+              <li>
+                <span class="ed-pipe__n">02</span>
+                <div><h3>Backtest</h3><p>Replay the rules on your own candle CSV, with costs, drawdown and every trade listed.</p></div>
+                <span class="ed-pipe__st">Available</span>
+                <button class="x-link" type="button" data-goto="backtest">Run a backtest</button>
+              </li>
+              <li>
+                <span class="ed-pipe__n">03</span>
+                <div><h3>Paper trade</h3><p>The bot runs on live prices without sending orders. Its P&amp;L shows on your dashboard.</p></div>
+                <span class="ed-pipe__st">Available</span>
+                <button class="x-link" type="button" data-goto="dashboard">See dashboard</button>
+              </li>
+              <li>
+                <span class="ed-pipe__n">04</span>
+                <div><h3>Go live</h3><p>Orders go out through your broker's official API with an exchange algo tag. Pause or exit at any time.</p></div>
+                <span class="ed-pipe__st ed-pipe__st--soon">In development</span>
+                <button class="x-link" type="button" data-goto-anchor="brokers">Connect a broker</button>
+              </li>
+            </ol>
           </section>
 
-          <!-- 5. Bento features -->
-          <section class="x-sec" aria-labelledby="feat-h" style="gap: 40px">
-            <div class="a-head x-rv">
-              <span class="a-kicker">The platform</span>
-              <h2 class="a-h2" id="feat-h"><span class="a-scr" data-scramble>Everything a systematic trader needs.</span></h2>
-            </div>
-            <div class="a-bento">
-              <article class="a-card a-c4 a-tilt">
-                <span class="a-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16M5 16l4-5 4 3 6-8" /></svg></span>
-                <h3>Backtest engine</h3>
-                <p>Upload candles, set buffer, exits and costs, and get win rate, profit factor, drawdown and a full trade log in seconds. Nothing leaves your browser.</p>
-                <div class="a-vis"><svg class="a-mini-eq" id="a-mini-eq" viewBox="0 0 600 140" preserveAspectRatio="none" aria-hidden="true"><path class="a" /><path class="l" /></svg></div>
-                <button class="x-link" type="button" data-goto="backtest">Try the backtester →</button>
-              </article>
-              <article class="a-card a-c2 a-tilt">
-                <span class="a-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="5" y="8" width="14" height="11" rx="2" /><path d="M12 4v4M9 13h.01M15 13h.01" /></svg></span>
-                <h3>No-code bot builder</h3>
-                <p>Rules you can read at a glance.</p>
-                <div class="a-rules">
-                  <div><em>IF</em>close &gt; first-candle high + 0.1%</div>
-                  <div><em>THEN</em>buy 1 lot · max 4 / day</div>
-                  <div><em>EXIT</em>flip, target or stop</div>
+          <!-- 4. Features -->
+          <section class="ed-sec" aria-labelledby="feat-h">
+            <header class="ed-head ed-head--top">
+              <div><p class="ed-num"><b>02</b> / Platform</p><h2 class="ed-h2" id="feat-h">What a rules-based trader needs, and nothing else.</h2></div>
+              <p class="ed-lead">A backtester, a rule builder you can read, square-off handling and routing across accounts.</p>
+            </header>
+            <div class="ed-feat">
+              <article class="ed-feat__lead">
+                <p class="ed-feat__k">Backtest engine</p>
+                <h3>Know how the rules behaved before they trade.</h3>
+                <p>Upload candles, set buffer, exits and costs, and read the results trade by trade. The file never leaves your browser.</p>
+                <div class="ed-feat__chart">
+                  <svg class="a-mini-eq" id="a-mini-eq" viewBox="0 0 600 140" preserveAspectRatio="none" aria-hidden="true"><path class="z" d="M0 100 H600" /><path class="l" pathLength="1" /></svg>
+                  <span class="ed-sim ed-sim--abs">Simulated</span>
                 </div>
-                <button class="x-link" type="button" data-goto="bots">Build a bot →</button>
+                <table class="ed-kv ed-kv--wide">
+                  <tbody>
+                    <tr><th scope="row">Input</th><td class="m">CSV · datetime, open, high, low, close</td></tr>
+                    <tr><th scope="row">Costs</th><td>Brokerage, taxes and slippage per trade</td></tr>
+                    <tr><th scope="row">Output</th><td>Win rate, profit factor, max drawdown, full trade log</td></tr>
+                    <tr><th scope="row">Runs on</th><td>Your browser. Nothing is uploaded.</td></tr>
+                  </tbody>
+                </table>
+                <button class="x-link" type="button" data-goto="backtest">Open the backtester</button>
               </article>
-              <article class="a-card a-c2 a-tilt">
-                <span class="a-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8" /><path d="M12 8v4l3 2" /></svg></span>
-                <h3>Auto square-off</h3>
-                <div class="a-clock"><span id="a-clock">15:15</span><small>IST · NSE</small></div>
-                <p>Every intraday bot closes out before the bell. MCX bots switch to 23:15 automatically.</p>
+              <article class="ed-feat__rules">
+                <p class="ed-feat__k">Rule builder</p>
+                <h3>Rules that read like a trade plan.</h3>
+                <div class="ed-rules">
+                  <div><em>IF</em><span>close &gt; first-candle high + 0.1%</span></div>
+                  <div><em>THEN</em><span>buy 1 lot · max 4 / day</span></div>
+                  <div><em>EXIT</em><span>flip, target or stop</span></div>
+                </div>
+                <button class="x-link" type="button" data-goto="bots">Build a bot</button>
               </article>
-              <article class="a-card a-c2 a-tilt">
-                <span class="a-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="8" r="3" /><circle cx="17" cy="10" r="2.5" /><path d="M3 19c0-3 3-5 6-5s6 2 6 5M14 19c0-2 1.5-3.5 4-3.5s3 1 3 3" /></svg></span>
-                <h3>Many accounts, one screen</h3>
-                <p>Label personal, HUF or family accounts per broker and route each bot where it belongs.</p>
+              <article class="ed-feat__sq">
+                <p class="ed-feat__k">Auto square-off</p>
+                <div class="ed-clock"><div><b id="a-clock">15:15</b><small>NSE intraday</small></div><div><b>23:15</b><small>MCX</small></div></div>
+                <p>Intraday bots close out before the bell. MCX bots switch to the evening cut-off on their own.</p>
+              </article>
+              <article class="ed-feat__acct">
+                <p class="ed-feat__k">Accounts</p>
+                <h3>Personal, HUF, family.</h3>
+                <p>Label each account per broker and send every bot to the one it belongs to.</p>
                 <div class="a-chips" id="a-chips"></div>
               </article>
-              <article class="a-card a-c2 a-tilt">
-                <span class="a-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg></span>
-                <h3>Private by design</h3>
-                <p>Bots, labels and settings stay in your browser, with export and import. Real API keys live only in your bot's own server.</p>
+              <article class="ed-feat__priv">
+                <p class="ed-feat__k">Privacy</p>
+                <h3>Your setup stays on your machine.</h3>
+                <p>Bots, labels and settings live in your browser, with export and import. API keys stay on your bot's own server, never on this page.</p>
               </article>
             </div>
           </section>
 
-          <!-- 6. Strategy library -->
-          <section class="x-sec" aria-labelledby="strat-h" style="gap: 40px">
-            <div class="x-sec__head x-rv">
-              <div class="a-head">
-                <span class="a-kicker">Strategy library</span>
-                <h2 class="a-h2" id="strat-h"><span class="a-scr" data-scramble>Start from a proven template.</span></h2>
-              </div>
-              <button class="x-btn" type="button" data-goto="bots">Open the builder</button>
-            </div>
-            <div class="a-strats x-rv">
-              <article class="a-card a-strat a-tilt"><span class="a-strat__no">01 · Intraday</span><h3>First Candle Cross</h3><p>Trade the break of the day's first candle range, with a buffer to skip false moves.</p><div class="a-tags"><span class="a-tag">NIFTY</span><span class="a-tag">BANKNIFTY</span><span class="a-tag">Backtestable</span></div><button class="x-link" type="button" data-strategy="First Candle Cross">Use template →</button></article>
-              <article class="a-card a-strat a-tilt"><span class="a-strat__no">02 · Intraday</span><h3>Opening Range Breakout</h3><p>Wait for the opening range to form, then follow the side that breaks first.</p><div class="a-tags"><span class="a-tag">Index</span><span class="a-tag">Stocks</span></div><button class="x-link" type="button" data-strategy="Opening Range Breakout">Use template →</button></article>
-              <article class="a-card a-strat a-tilt"><span class="a-strat__no">03 · Intraday</span><h3>Gap fade</h3><p>Fade outsized opening gaps back toward the previous close.</p><div class="a-tags"><span class="a-tag">Stocks</span><span class="a-tag">Mean reversion</span></div><button class="x-link" type="button" data-strategy="Gap fade">Use template →</button></article>
-              <article class="a-card a-strat a-tilt"><span class="a-strat__no">04 · Positional</span><h3>Monthly option spread</h3><p>A defined-risk spread on the monthly expiry, set once and managed by rules.</p><div class="a-tags"><span class="a-tag">NFO</span><span class="a-tag">Defined risk</span></div><button class="x-link" type="button" data-strategy="Monthly option spread">Use template →</button></article>
-              <article class="a-card a-strat a-tilt"><span class="a-strat__no">05 · Positional</span><h3>Momentum</h3><p>Hold the strongest names and rotate on a schedule you set.</p><div class="a-tags"><span class="a-tag">Nifty 50</span><span class="a-tag">Rebalance</span></div><button class="x-link" type="button" data-strategy="Momentum">Use template →</button></article>
+          <!-- 5. Strategy templates -->
+          <section class="ed-sec" aria-labelledby="strat-h">
+            <header class="ed-head ed-head--top">
+              <div><p class="ed-num"><b>03</b> / Templates</p><h2 class="ed-h2" id="strat-h">Five templates to start from.</h2></div>
+              <div class="ed-head__end"><p class="ed-lead">Each one opens in the builder with its rules filled in. Change any value before you save.</p></div>
+            </header>
+            <div class="ed-tablewrap">
+              <table class="ed-tbl">
+                <thead>
+                  <tr><th class="c-no">#</th><th>Template</th><th>Type</th><th>Instruments</th><th class="c-logic">Logic</th><th>Backtester</th><th class="c-act"><span class="x-vh">Action</span></th></tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="c-no">01</td><th scope="row">First Candle Cross</th><td data-l="Type">Intraday</td>
+                    <td data-l="Instruments" class="m">NIFTY, BANKNIFTY</td>
+                    <td class="c-logic">Trade the break of the day's first candle, with a buffer to skip false moves.</td>
+                    <td data-l="Backtester"><span class="ed-yes">Yes</span></td>
+                    <td class="c-act"><button class="ed-btn ed-btn--sm ed-btn--line" type="button" data-strategy="First Candle Cross">Use template</button></td>
+                  </tr>
+                  <tr>
+                    <td class="c-no">02</td><th scope="row">Opening Range Breakout</th><td data-l="Type">Intraday</td>
+                    <td data-l="Instruments" class="m">Index, stocks</td>
+                    <td class="c-logic">Let the opening range form, then follow the side that breaks first.</td>
+                    <td data-l="Backtester"><span class="ed-no">Paper only</span></td>
+                    <td class="c-act"><button class="ed-btn ed-btn--sm ed-btn--line" type="button" data-strategy="Opening Range Breakout">Use template</button></td>
+                  </tr>
+                  <tr>
+                    <td class="c-no">03</td><th scope="row">Gap fade</th><td data-l="Type">Intraday</td>
+                    <td data-l="Instruments" class="m">Stocks</td>
+                    <td class="c-logic">Fade outsized opening gaps back toward the previous close.</td>
+                    <td data-l="Backtester"><span class="ed-no">Paper only</span></td>
+                    <td class="c-act"><button class="ed-btn ed-btn--sm ed-btn--line" type="button" data-strategy="Gap fade">Use template</button></td>
+                  </tr>
+                  <tr>
+                    <td class="c-no">04</td><th scope="row">Monthly option spread</th><td data-l="Type">Positional</td>
+                    <td data-l="Instruments" class="m">NFO</td>
+                    <td class="c-logic">A defined-risk spread on the monthly expiry, set once and managed by rules.</td>
+                    <td data-l="Backtester"><span class="ed-no">Paper only</span></td>
+                    <td class="c-act"><button class="ed-btn ed-btn--sm ed-btn--line" type="button" data-strategy="Monthly option spread">Use template</button></td>
+                  </tr>
+                  <tr>
+                    <td class="c-no">05</td><th scope="row">Momentum</th><td data-l="Type">Positional</td>
+                    <td data-l="Instruments" class="m">Nifty 50</td>
+                    <td class="c-logic">Hold the strongest names and rotate on a schedule you set.</td>
+                    <td data-l="Backtester"><span class="ed-no">Paper only</span></td>
+                    <td class="c-act"><button class="ed-btn ed-btn--sm ed-btn--line" type="button" data-strategy="Momentum">Use template</button></td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </section>
 
-          <!-- 7. Market pulse -->
-          <section class="x-sec" id="chart" aria-labelledby="chart-h" style="gap: 24px">
-            <div class="x-sec__head x-rv">
-              <div class="a-head">
-                <span class="a-kicker">Market pulse</span>
-                <h2 class="a-h2" id="chart-h"><span class="a-scr" data-scramble>Live across NSE, BSE and MCX.</span></h2>
-              </div>
+          <!-- 6. Market pulse -->
+          <section class="ed-sec" id="chart" aria-labelledby="chart-h">
+            <header class="ed-head ed-head--top">
+              <div><p class="ed-num"><b>04</b> / Market</p><h2 class="ed-h2" id="chart-h">NSE, BSE and MCX, as they trade.</h2></div>
               <div class="x-pills" id="chart-pills" role="group" aria-label="Chart symbol">
                 <button class="x-pill" type="button" data-sym="NSE:NIFTY" aria-pressed="true">NIFTY</button>
                 <button class="x-pill" type="button" data-sym="NSE:BANKNIFTY" aria-pressed="false">BANKNIFTY</button>
@@ -546,81 +622,83 @@
                 <button class="x-pill" type="button" data-sym="NSE:ICICIBANK" aria-pressed="false">ICICIBANK</button>
                 <button class="x-pill" type="button" data-sym="NSE:HDFCBANK" aria-pressed="false">HDFCBANK</button>
               </div>
-            </div>
-            <div class="a-pulse">
-              <div class="x-panel"><div class="x-widget x-chart" id="tv-chart"></div></div>
-              <div class="x-panel" id="markets">
-                <div class="x-subhead">
-                  <h3>Quotes</h3>
-                  <div class="x-segctl" id="quotes-seg" role="group" aria-label="Quote list">
-                    <button class="x-segbtn" type="button" data-group="indices" aria-pressed="true">Indices</button>
-                    <button class="x-segbtn" type="button" data-group="stocks" aria-pressed="false">Stocks</button>
-                    <button class="x-segbtn" type="button" data-group="mcx" aria-pressed="false">MCX</button>
+            </header>
+            <div class="ed-market">
+              <div class="a-pulse">
+                <div class="x-panel"><div class="x-widget x-chart" id="tv-chart"></div></div>
+                <div class="x-panel" id="markets">
+                  <div class="x-subhead">
+                    <h3>Quotes</h3>
+                    <div class="x-segctl" id="quotes-seg" role="group" aria-label="Quote list">
+                      <button class="x-segbtn" type="button" data-group="indices" aria-pressed="true">Indices</button>
+                      <button class="x-segbtn" type="button" data-group="stocks" aria-pressed="false">Stocks</button>
+                      <button class="x-segbtn" type="button" data-group="mcx" aria-pressed="false">MCX</button>
+                    </div>
                   </div>
+                  <div class="x-widget" id="tv-quotes" style="height: 508px"></div>
                 </div>
-                <div class="x-widget" id="tv-quotes" style="height: 508px"></div>
               </div>
-            </div>
-            <div class="x-grid2">
-              <div class="x-panel">
-                <div class="x-subhead">
-                  <h3>Top movers</h3>
-                  <div class="x-segctl" id="hot-seg" role="group" aria-label="Movers list">
-                    <button class="x-segbtn" type="button" data-tone="up" data-list="gainers" aria-pressed="true">Gainers</button>
-                    <button class="x-segbtn" type="button" data-tone="down" data-list="losers" aria-pressed="false">Losers</button>
-                    <button class="x-segbtn" type="button" data-list="active" aria-pressed="false">Most active</button>
+              <div class="x-grid2">
+                <div class="x-panel">
+                  <div class="x-subhead">
+                    <h3>Top movers</h3>
+                    <div class="x-segctl" id="hot-seg" role="group" aria-label="Movers list">
+                      <button class="x-segbtn" type="button" data-tone="up" data-list="gainers" aria-pressed="true">Gainers</button>
+                      <button class="x-segbtn" type="button" data-tone="down" data-list="losers" aria-pressed="false">Losers</button>
+                      <button class="x-segbtn" type="button" data-list="active" aria-pressed="false">Most active</button>
+                    </div>
                   </div>
+                  <div class="x-widget" id="tv-hotlists" style="height: 480px"></div>
                 </div>
-                <div class="x-widget" id="tv-hotlists" style="height: 480px"></div>
+                <div class="x-panel">
+                  <div class="x-subhead"><h3>Sensex heatmap</h3><span class="x-cap">By sector, coloured by change</span></div>
+                  <div class="x-widget" id="tv-heatmap" style="height: 480px"></div>
+                </div>
               </div>
-              <div class="x-panel">
-                <div class="x-subhead"><h3>Sensex heatmap</h3><span class="x-cap">By sector, coloured by change</span></div>
-                <div class="x-widget" id="tv-heatmap" style="height: 480px"></div>
-              </div>
-            </div>
-            <div class="x-panel" id="news"><div class="x-subhead"><h3>Market news</h3><span class="x-cap">India</span></div><div class="x-widget" id="tv-news" style="height: 440px"></div></div>
-            <p class="x-cap">Market data and charts by TradingView.</p>
-          </section>
-
-          <!-- 8. Safety -->
-          <section class="x-sec" aria-labelledby="safe-h" style="gap: 40px">
-            <div class="a-head a-head--c x-rv">
-              <span class="a-kicker">Safety</span>
-              <h2 class="a-h2" id="safe-h">Your money. Your broker. <span class="a-grad">Your control.</span></h2>
-            </div>
-            <div class="a-safe x-rv">
-              <article class="a-card a-tilt"><span class="a-safe__no">01</span><h3>Funds never leave your account</h3><p>Algora never holds money. Orders go to your own SEBI-registered broker through its official API.</p></article>
-              <article class="a-card a-tilt"><span class="a-safe__no">02</span><h3>Paper first, always</h3><p>Every bot starts in paper mode. You decide when, and whether, anything goes live.</p></article>
-              <article class="a-card a-tilt"><span class="a-safe__no">03</span><h3>Off switch in one tap</h3><p>Pause or delete any bot instantly, and every intraday position squares off before the close.</p></article>
+              <div class="x-panel" id="news"><div class="x-subhead"><h3>Market news</h3><span class="x-cap">India</span></div><div class="x-widget" id="tv-news" style="height: 440px"></div></div>
+              <p class="x-cap">Market data and charts by TradingView.</p>
             </div>
           </section>
 
-          <!-- 9. Brokers -->
-          <section class="x-sec" id="brokers" aria-labelledby="brokers-h" style="gap: 24px">
-            <div class="x-sec__head x-rv">
-              <div class="a-head">
-                <span class="a-kicker">Broker connections</span>
-                <h2 class="a-h2" id="brokers-h"><span class="a-scr" data-scramble>Connect your accounts.</span></h2>
-              </div>
-              <p class="x-cap">Add several accounts per broker. Labels only; keys stay on your server.</p>
-            </div>
-            <div class="x-brokers x-rv" id="broker-grid"></div>
+          <!-- 7. Safety -->
+          <section class="ed-sec ed-sec--side" aria-labelledby="safe-h">
+            <header class="ed-head">
+              <p class="ed-num"><b>05</b> / Safety</p>
+              <h2 class="ed-h2 ed-h2--xl" id="safe-h">Algora never holds your money.</h2>
+            </header>
+            <ol class="ed-clauses">
+              <li><span>05.1</span><div><h3>Funds stay with your broker</h3><p>Orders go to your own SEBI-registered broker through its official API. There is no Algora wallet and no pooled account.</p></div></li>
+              <li><span>05.2</span><div><h3>Paper before live</h3><p>Every bot starts in paper mode. You decide if and when it goes live.</p></div></li>
+              <li><span>05.3</span><div><h3>One switch to stop</h3><p>Pause or delete a bot instantly. Intraday positions square off before the close.</p></div></li>
+            </ol>
           </section>
 
-          <!-- 10. Bots at a glance -->
-          <section class="x-sec" id="glance" aria-labelledby="glance-h" style="gap: 24px">
-            <div class="x-sec__head x-rv">
-              <div class="a-head"><span class="a-kicker">Your bots</span><h2 class="a-h2" id="glance-h">Your bots at a glance</h2></div>
-              <button class="x-btn" type="button" data-goto="bots">Open Bots</button>
-            </div>
+          <!-- 8. Brokers -->
+          <section class="ed-sec" id="brokers" aria-labelledby="brokers-h">
+            <header class="ed-head ed-head--top">
+              <div><p class="ed-num"><b>06</b> / Brokers</p><h2 class="ed-h2" id="brokers-h">Connect your accounts.</h2></div>
+              <p class="ed-lead">Twelve brokers, several accounts each. Only the label is saved here; API keys stay on your server.</p>
+            </header>
+            <div class="x-brokers" id="broker-grid"></div>
+          </section>
+
+          <!-- 9. Bots at a glance -->
+          <section class="ed-sec" id="glance" aria-labelledby="glance-h">
+            <header class="ed-head ed-head--top">
+              <div><p class="ed-num"><b>07</b> / Your bots</p><h2 class="ed-h2" id="glance-h">Your bots at a glance.</h2></div>
+              <div class="ed-head__end"><button class="ed-btn ed-btn--line" type="button" data-goto="bots">Open Bots</button></div>
+            </header>
             <div id="home-bots">
-              <div class="x-panel x-empty"><p>No bots running. Connect a broker to start.</p><button class="x-btn x-btn--primary x-btn--sm" type="button" data-goto-anchor="brokers">Connect a broker</button></div>
+              <div class="x-panel x-empty"><p>No bots yet. Connect a broker account, then build one from a template.</p><button class="ed-btn ed-btn--solid ed-btn--sm" type="button" data-goto-anchor="brokers">Connect a broker</button></div>
             </div>
           </section>
 
-          <!-- 11. FAQ -->
-          <section class="x-sec" aria-labelledby="faq-h" style="gap: 32px">
-            <div class="a-head a-head--c x-rv"><span class="a-kicker">FAQ</span><h2 class="a-h2" id="faq-h">Questions traders ask</h2></div>
+          <!-- 10. FAQ -->
+          <section class="ed-sec ed-sec--side" aria-labelledby="faq-h">
+            <header class="ed-head">
+              <p class="ed-num"><b>08</b> / FAQ</p>
+              <h2 class="ed-h2" id="faq-h">Before you connect a broker.</h2>
+            </header>
             <div class="a-faq">
               <details><summary>Is algo trading legal for retail traders in India?</summary><p>Yes. Under SEBI's retail algo framework (circular of 4 February 2025, applicable to all brokers from 1 April 2026), retail traders can automate through their SEBI-registered broker's API. Orders carry an exchange-issued algo tag and API access runs from a whitelisted static IP.</p></details>
               <details><summary>Does Algora hold my money or place real orders today?</summary><p>No. Algora never holds funds. Bots currently run in paper mode only, so no real orders are sent. Live trading will route through your own broker account.</p></details>
@@ -630,14 +708,18 @@
             </div>
           </section>
 
-          <!-- 12. Final CTA -->
-          <div class="a-final x-rv">
-            <span class="a-kicker" style="color: rgba(238,241,247,0.6)">Get started</span>
-            <h2 class="a-h2">Your first bot, <span class="a-grad">paper trading today.</span></h2>
-            <p>Build it, backtest it and watch it trade on live prices before a single rupee is at risk.</p>
-            <div class="a-ctas" style="justify-content: center">
-              <button class="x-btn x-btn--lg a-btn-glow a-mag" type="button" data-goto="bots">Build a bot free</button>
-              <button class="x-btn x-btn--lg a-btn-ghost a-mag" type="button" data-goto-anchor="brokers">Connect a broker</button>
+          <!-- 11. Final CTA -->
+          <div class="ed-final">
+            <div>
+              <p class="ed-num"><b>09</b> / Start</p>
+              <h2 class="ed-h2 ed-h2--xl">Write the rules tonight. Paper trade them at tomorrow's open.</h2>
+            </div>
+            <div class="ed-final__side">
+              <p>Building, backtesting and paper trading cost nothing. Live routing through your broker's API is in development.</p>
+              <div class="ed-ctas">
+                <button class="ed-btn ed-btn--solid" type="button" data-goto="bots">Build a bot</button>
+                <button class="ed-btn ed-btn--line" type="button" data-goto-anchor="brokers">Connect a broker</button>
+              </div>
             </div>
           </div>
         </section>
