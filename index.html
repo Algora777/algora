@@ -12,8 +12,8 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap"
     />
-    <link rel="stylesheet" href="hark.css?v=20261125b" />
-    <link rel="stylesheet" href="hark-hero.css?v=20261125b" />
+    <link rel="stylesheet" href="hark.css?v=20261125c" />
+    <link rel="stylesheet" href="hark-hero.css?v=20261125c" />
     <style>
       /* ===== Theme tokens ===== */
       [data-theme="light"] {
@@ -342,7 +342,10 @@
       }
     </style>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
-    <link rel="stylesheet" href="algora-home.css?v=20261125b" />
+    <script>/* Motion gate: hidden starting states only exist under html.fx; removed if algora-fx.js does not start */
+      (function () { try { var d = document.documentElement; if (window.matchMedia && !matchMedia("(prefers-reduced-motion: reduce)").matches && "IntersectionObserver" in window) { d.classList.add("fx"); setTimeout(function () { if (!window.__algoraFx) d.classList.remove("fx"); }, 4000); } } catch (e) {} })();
+    </script>
+    <link rel="stylesheet" href="algora-home.css?v=20261125c" />
   </head>
   <body>
     <div class="page" id="top">
@@ -390,10 +393,10 @@
               </div>
               <div class="ed-hero__grid">
                 <div class="ed-hero__side">
-                  <h1 class="ed-h1">Your trading rules, running on your broker. <span>No code.</span></h1>
+                  <h1 class="ed-h1">Your trading rules, running on your broker. <span class="ed-h1__em">No code.</span></h1>
                   <p class="ed-hero__sub">Write entries, exits and square-off times for Nifty, BankNifty, stocks and MCX. Test them on your own candles, paper trade on live prices, then route orders through Zerodha, Upstox, Angel One, Dhan or Fyers.</p>
                   <div class="ed-ctas">
-                    <button class="ed-btn ed-btn--solid" type="button" data-goto="bots">Build a bot</button>
+                    <button class="ed-btn ed-btn--solid" type="button" data-goto="bots">Build a bot<span class="ed-btn__arr" aria-hidden="true">→</span></button>
                     <button class="ed-btn ed-btn--line" type="button" data-goto="backtest">Run a backtest</button>
                   </div>
                   <dl class="ed-facts">
@@ -575,35 +578,35 @@
                     <td data-l="Instruments" class="m">NIFTY, BANKNIFTY</td>
                     <td class="c-logic">Trade the break of the day's first candle, with a buffer to skip false moves.</td>
                     <td data-l="Backtester"><span class="ed-yes">Yes</span></td>
-                    <td class="c-act"><button class="ed-btn ed-btn--sm ed-btn--line" type="button" data-strategy="First Candle Cross">Use template</button></td>
+                    <td class="c-act"><button class="ed-btn ed-btn--sm ed-btn--line" type="button" data-strategy="First Candle Cross">Use template<span class="ed-btn__arr" aria-hidden="true">→</span></button></td>
                   </tr>
                   <tr>
                     <td class="c-no">02</td><th scope="row">Opening Range Breakout</th><td data-l="Type">Intraday</td>
                     <td data-l="Instruments" class="m">Index, stocks</td>
                     <td class="c-logic">Let the opening range form, then follow the side that breaks first.</td>
                     <td data-l="Backtester"><span class="ed-no">Paper only</span></td>
-                    <td class="c-act"><button class="ed-btn ed-btn--sm ed-btn--line" type="button" data-strategy="Opening Range Breakout">Use template</button></td>
+                    <td class="c-act"><button class="ed-btn ed-btn--sm ed-btn--line" type="button" data-strategy="Opening Range Breakout">Use template<span class="ed-btn__arr" aria-hidden="true">→</span></button></td>
                   </tr>
                   <tr>
                     <td class="c-no">03</td><th scope="row">Gap fade</th><td data-l="Type">Intraday</td>
                     <td data-l="Instruments" class="m">Stocks</td>
                     <td class="c-logic">Fade outsized opening gaps back toward the previous close.</td>
                     <td data-l="Backtester"><span class="ed-no">Paper only</span></td>
-                    <td class="c-act"><button class="ed-btn ed-btn--sm ed-btn--line" type="button" data-strategy="Gap fade">Use template</button></td>
+                    <td class="c-act"><button class="ed-btn ed-btn--sm ed-btn--line" type="button" data-strategy="Gap fade">Use template<span class="ed-btn__arr" aria-hidden="true">→</span></button></td>
                   </tr>
                   <tr>
                     <td class="c-no">04</td><th scope="row">Monthly option spread</th><td data-l="Type">Positional</td>
                     <td data-l="Instruments" class="m">NFO</td>
                     <td class="c-logic">A defined-risk spread on the monthly expiry, set once and managed by rules.</td>
                     <td data-l="Backtester"><span class="ed-no">Paper only</span></td>
-                    <td class="c-act"><button class="ed-btn ed-btn--sm ed-btn--line" type="button" data-strategy="Monthly option spread">Use template</button></td>
+                    <td class="c-act"><button class="ed-btn ed-btn--sm ed-btn--line" type="button" data-strategy="Monthly option spread">Use template<span class="ed-btn__arr" aria-hidden="true">→</span></button></td>
                   </tr>
                   <tr>
                     <td class="c-no">05</td><th scope="row">Momentum</th><td data-l="Type">Positional</td>
                     <td data-l="Instruments" class="m">Nifty 50</td>
                     <td class="c-logic">Hold the strongest names and rotate on a schedule you set.</td>
                     <td data-l="Backtester"><span class="ed-no">Paper only</span></td>
-                    <td class="c-act"><button class="ed-btn ed-btn--sm ed-btn--line" type="button" data-strategy="Momentum">Use template</button></td>
+                    <td class="c-act"><button class="ed-btn ed-btn--sm ed-btn--line" type="button" data-strategy="Momentum">Use template<span class="ed-btn__arr" aria-hidden="true">→</span></button></td>
                   </tr>
                 </tbody>
               </table>
@@ -689,7 +692,7 @@
               <div class="ed-head__end"><button class="ed-btn ed-btn--line" type="button" data-goto="bots">Open Bots</button></div>
             </header>
             <div id="home-bots">
-              <div class="x-panel x-empty"><p>No bots yet. Connect a broker account, then build one from a template.</p><button class="ed-btn ed-btn--solid ed-btn--sm" type="button" data-goto-anchor="brokers">Connect a broker</button></div>
+              <div class="x-panel x-empty"><p>No bots yet. Connect a broker account, then build one from a template.</p><button class="ed-btn ed-btn--solid ed-btn--sm" type="button" data-goto-anchor="brokers">Connect a broker<span class="ed-btn__arr" aria-hidden="true">→</span></button></div>
             </div>
           </section>
 
@@ -717,7 +720,7 @@
             <div class="ed-final__side">
               <p>Building, backtesting and paper trading cost nothing. Live routing through your broker's API is in development.</p>
               <div class="ed-ctas">
-                <button class="ed-btn ed-btn--solid" type="button" data-goto="bots">Build a bot</button>
+                <button class="ed-btn ed-btn--solid" type="button" data-goto="bots">Build a bot<span class="ed-btn__arr" aria-hidden="true">→</span></button>
                 <button class="ed-btn ed-btn--line" type="button" data-goto-anchor="brokers">Connect a broker</button>
               </div>
             </div>
@@ -1043,8 +1046,8 @@
     <div class="x-toast" id="toast" role="status" aria-live="polite"></div>
 
     <!-- Broker logos only (folded in at publish); its demo grid and trades are not used -->
-    <script src="algora-data.js?v=20261125b"></script>
-    <script src="hark.js?v=20261125b"></script>
+    <script src="algora-data.js?v=20261125c"></script>
+    <script src="hark.js?v=20261125c"></script>
     <script>
       (function () {
         var $ = function (s, r) { return (r || document).querySelector(s); };
@@ -1694,6 +1697,6 @@
         mountAll(); moveBar();
       })();
     </script>
-    <script src="algora-fx.js?v=20261125b"></script>
+    <script src="algora-fx.js?v=20261125c"></script>
   </body>
 </html>

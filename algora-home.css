@@ -86,7 +86,7 @@ body:has(#tab-home:not([hidden])) .x-foot { font-size: 14px; }
 .ed-hero__clock { margin-left: auto; }
 .ed-hero__clock b { color: var(--x-text); font-weight: 500; font-variant-numeric: tabular-nums; }
 .ed-h1 { font: 600 clamp(40px, 4.2vw, 60px)/0.98 var(--ed-display); letter-spacing: -0.032em; text-align: left; text-wrap: balance; }
-.ed-h1 span { color: var(--x-accent); }
+.ed-h1 .ed-h1__em { color: var(--x-accent); }
 .ed-hero__grid { display: grid; grid-template-columns: minmax(0, 4.5fr) minmax(0, 7.5fr); gap: 40px; align-items: start; }
 .ed-hero__side { display: grid; gap: 26px; align-content: start; }
 .ed-hero__sub { font-size: 16.5px; line-height: 1.55; color: var(--x-muted); }
@@ -377,3 +377,115 @@ body:has(#tab-home:not([hidden])) .x-foot .x-brand { display: inline-flex; align
 
 /* TradingView iframes: match their light color-scheme so isTransparent works on the dark page */
 [id^="tv-"] iframe { color-scheme: light; }
+
+/* ===================================================================
+   Motion layer. Hidden starting states only apply under html.fx, which a
+   head script adds when motion is allowed (and removes if algora-fx.js
+   never arrives), so the page reads fully without JS or with reduced motion.
+   Transform and opacity only, everything runs once.
+   =================================================================== */
+:root { --fx-ease: cubic-bezier(0.2, 0.7, 0.1, 1); }
+
+/* Scroll progress, 2px, Home only */
+.fx-progress { position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 200; background: var(--x-accent); transform: scaleX(0); transform-origin: 0 50%; pointer-events: none; will-change: transform; }
+body:not(:has(#tab-home:not([hidden]))) .fx-progress { display: none; }
+
+/* Headline mask reveal: JS wraps each rendered line, then restores the markup */
+.ed-h1 .ed-h1__em { white-space: nowrap; position: relative; }
+.fx-l { display: block; white-space: nowrap; clip-path: inset(-0.3em -0.6em -0.16em -0.6em); }
+.fx-l > span { display: block; }
+html.fx .fx-h { opacity: 0; }
+html.fx .fx-h.fx-split, html.fx .fx-h.fx-done { opacity: 1; }
+html.fx .fx-h.fx-split .fx-l > span { transform: translate3d(0, 135%, 0); }
+html.fx .fx-h.fx-split.fx-in .fx-l > span { transform: none; transition: transform 700ms var(--fx-ease); transition-delay: calc(var(--li, 0) * 90ms); }
+
+/* "No code." underline stroke */
+.ed-h1 .ed-h1__em::after { content: ""; position: absolute; left: 0; right: 0; bottom: -0.02em; height: max(2px, 0.045em); background: var(--x-accent); transform-origin: 0 50%; }
+html.fx .ed-h1:not(.fx-ul) .ed-h1__em::after { transform: scaleX(0); }
+html.fx .ed-h1.fx-ul .ed-h1__em::after { transition: transform 650ms var(--fx-ease); }
+
+/* Hero supporting copy and the product panel */
+html.fx .a-hero .ed-hero__sub, html.fx .a-hero .ed-ctas, html.fx .a-hero .ed-facts { opacity: 0; transform: translate3d(0, 8px, 0); }
+html.fx .a-hero.fx-copy .ed-hero__sub, html.fx .a-hero.fx-copy .ed-ctas, html.fx .a-hero.fx-copy .ed-facts { opacity: 1; transform: none; transition: opacity 600ms var(--fx-ease), transform 700ms var(--fx-ease); }
+html.fx .a-hero.fx-copy .ed-ctas { transition-delay: 80ms; }
+html.fx .a-hero.fx-copy .ed-facts { transition-delay: 160ms; }
+html.fx .ed-app { opacity: 0; transform: translate3d(0, 12px, 0); }
+html.fx .ed-app.fx-in { opacity: 1; transform: none; transition: opacity 700ms var(--fx-ease), transform 800ms var(--fx-ease); }
+html.fx .ed-app .ed-kv tr { opacity: 0; transform: translate3d(0, 4px, 0); }
+html.fx .ed-app.fx-rules .ed-kv tr { opacity: 1; transform: none; transition: opacity 380ms var(--fx-ease), transform 420ms var(--fx-ease); transition-delay: calc(var(--d, 0) * 1ms); }
+html.fx .ed-app .ed-trades tbody tr { opacity: 0; transform: translate3d(12px, 0, 0); }
+html.fx .ed-app.fx-trades .ed-trades tbody tr { opacity: 1; transform: none; transition: opacity 450ms var(--fx-ease), transform 500ms var(--fx-ease), background-color 140ms; transition-delay: calc(var(--d, 0) * 1ms), calc(var(--d, 0) * 1ms), 0s; }
+
+/* Price feed: a 150ms background flash on the changed number */
+.ed-tape__row .tk { position: relative; isolation: isolate; }
+.ed-tape__row .tk::before { content: ""; position: absolute; inset: -3px -3px; border-radius: 2px; z-index: -1; opacity: 0; transition: opacity 450ms ease-out; pointer-events: none; }
+.ed-tape__row .tk.up::before { background: color-mix(in srgb, var(--x-up) 22%, transparent); opacity: 1; transition: none; }
+.ed-tape__row .tk.dn::before { background: color-mix(in srgb, var(--x-down) 22%, transparent); opacity: 1; transition: none; }
+.ed-tape__row .tk.was-up::before { background: color-mix(in srgb, var(--x-up) 22%, transparent); }
+.ed-tape__row .tk.was-dn::before { background: color-mix(in srgb, var(--x-down) 22%, transparent); }
+
+/* Hairline rules draw left to right */
+.fx-rule { --rule-c: var(--x-text); }
+.ed-sec.fx-rule { --rule-c: var(--x-border); }
+html.fx .fx-rule { position: relative; border-top-color: transparent !important; }
+html.fx .fx-rule::before { content: ""; position: absolute; left: 0; right: 0; top: -1px; height: 1px; background: var(--rule-c); transform: scaleX(0); transform-origin: 0 50%; pointer-events: none; }
+html.fx .fx-rule.fx-in::before { transform: none; transition: transform 1000ms var(--fx-ease); }
+
+/* Lead copy beside section headings */
+html.fx #tab-home .ed-head .ed-lead { opacity: 0; transform: translate3d(0, 8px, 0); }
+html.fx #tab-home .ed-head.fx-in .ed-lead { opacity: 1; transform: none; transition: opacity 600ms var(--fx-ease) 250ms, transform 700ms var(--fx-ease) 250ms; }
+
+/* Staggered entry: rows move as a whole; grid cells keep their fill and lift their content */
+html.fx #tab-home .fx-item { opacity: 0; transform: translate3d(0, 8px, 0); }
+html.fx #tab-home .fx-item.fx-in { opacity: 1; transform: none; transition: opacity 550ms var(--fx-ease), transform 650ms var(--fx-ease), background-color 140ms, color 140ms; transition-delay: var(--d, 0ms), var(--d, 0ms), 0s, 0s; }
+html.fx #tab-home .fx-cell > * { opacity: 0; transform: translate3d(0, 8px, 0); }
+html.fx #tab-home .fx-cell.fx-in > * { opacity: 1; transform: none; transition: opacity 550ms var(--fx-ease), transform 650ms var(--fx-ease); transition-delay: var(--d, 0ms); }
+
+/* Card hover: accent hairline and a faint cursor spotlight */
+.fx-card { position: relative; isolation: isolate; }
+.fx-card::before, .fx-card::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity 220ms ease; }
+.fx-card::before { z-index: -1; background: radial-gradient(320px circle at var(--mx, 50%) var(--my, 50%), color-mix(in srgb, var(--x-accent) 6%, transparent), transparent 70%); }
+.fx-card::after { z-index: 2; border: 1px solid var(--x-accent); }
+@media (hover: hover) and (pointer: fine) {
+  .fx-card:hover::before, .fx-card:hover::after { opacity: 1; }
+}
+#tab-home .x-broker:hover { background: var(--x-bg); }
+
+/* Template rows: row highlight, accent left edge, arrow slides in */
+.ed-tbl tbody tr > :first-child { position: relative; }
+.ed-tbl tbody tr > :first-child::before { content: ""; position: absolute; left: 0; top: -1px; bottom: 0; width: 2px; background: var(--x-accent); transform: scaleY(0); transform-origin: 50% 50%; transition: transform 220ms var(--fx-ease); }
+.ed-tbl tbody tr:hover > :first-child::before { transform: none; }
+.ed-btn__arr { display: inline-block; font-family: var(--x-sans); font-weight: 500; transition: transform 200ms var(--fx-ease), opacity 200ms ease; }
+.ed-tbl .ed-btn__arr { opacity: 0; transform: translate3d(6px, 0, 0); }
+.ed-tbl tbody tr:hover .ed-btn__arr, .ed-tbl .ed-btn:focus-visible .ed-btn__arr { opacity: 1; transform: none; }
+@media (hover: none) { .ed-tbl .ed-btn__arr { opacity: 1; transform: none; } }
+@media (min-width: 681px) {
+  .ed-tbl .c-no { padding-left: 12px; }
+}
+
+/* Buttons: primary fill sweep and arrow nudge, secondary border to accent */
+.ed-btn--solid { position: relative; isolation: isolate; overflow: hidden; }
+.ed-btn--solid::before { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--x-accent-hover); transform: scaleX(0); transform-origin: 0 50%; transition: transform 340ms var(--fx-ease); }
+.ed-btn--solid:hover { background: var(--x-accent); }
+.ed-btn--solid:hover::before { transform: none; }
+.ed-btn--solid:hover .ed-btn__arr { transform: translate3d(3px, 0, 0); }
+.ed-btn--line:hover { border-color: var(--x-accent); }
+.fx-magnet { transition: background 140ms, border-color 140ms, color 140ms, transform 260ms var(--fx-ease); }
+
+/* Pipeline: a progress line runs down the step numbers as the section scrolls */
+.ed-pipe { position: relative; }
+.fx-pipe { position: absolute; width: 1px; background: var(--x-border); pointer-events: none; }
+.fx-pipe i { position: absolute; inset: 0; background: var(--x-accent); transform: scaleY(0); transform-origin: 50% 0; will-change: transform; }
+.ed-pipe__n { position: relative; z-index: 1; }
+.ed-pipe__n.fx-bg { background: var(--x-bg); }
+html.fx .ed-pipe li .ed-pipe__st::before { opacity: 0.2; transition: opacity 320ms ease; }
+html.fx .ed-pipe li.fx-lit .ed-pipe__st::before { opacity: 1; }
+
+/* FAQ: height is animated by JS (Web Animations); answer fades in */
+.a-faq details { box-sizing: border-box; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fx-card::before, .fx-card::after, .ed-btn--solid::before, .ed-btn__arr, .ed-tbl tbody tr > :first-child::before, .fx-magnet { transition: none !important; }
+  .ed-btn--solid:hover .ed-btn__arr { transform: none; }
+  .ed-tbl .ed-btn__arr { transform: none; }
+}
