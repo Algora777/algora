@@ -12,8 +12,8 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap"
     />
-    <link rel="stylesheet" href="hark.css" />
-    <link rel="stylesheet" href="hark-hero.css" />
+    <link rel="stylesheet" href="hark.css?v=20261125b" />
+    <link rel="stylesheet" href="hark-hero.css?v=20261125b" />
     <style>
       /* ===== Theme tokens ===== */
       [data-theme="light"] {
@@ -342,7 +342,7 @@
       }
     </style>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
-    <link rel="stylesheet" href="algora-home.css" />
+    <link rel="stylesheet" href="algora-home.css?v=20261125b" />
   </head>
   <body>
     <div class="page" id="top">
@@ -615,12 +615,12 @@
             <header class="ed-head ed-head--top">
               <div><p class="ed-num"><b>04</b> / Market</p><h2 class="ed-h2" id="chart-h">NSE, BSE and MCX, as they trade.</h2></div>
               <div class="x-pills" id="chart-pills" role="group" aria-label="Chart symbol">
-                <button class="x-pill" type="button" data-sym="NSE:NIFTY" aria-pressed="true">NIFTY</button>
-                <button class="x-pill" type="button" data-sym="NSE:BANKNIFTY" aria-pressed="false">BANKNIFTY</button>
-                <button class="x-pill" type="button" data-sym="MCX:CRUDEOIL1!" aria-pressed="false">CRUDEOIL</button>
-                <button class="x-pill" type="button" data-sym="MCX:GOLD1!" aria-pressed="false">GOLD</button>
-                <button class="x-pill" type="button" data-sym="NSE:ICICIBANK" aria-pressed="false">ICICIBANK</button>
-                <button class="x-pill" type="button" data-sym="NSE:HDFCBANK" aria-pressed="false">HDFCBANK</button>
+                <button class="x-pill" type="button" data-sym="BSE:SENSEX" aria-pressed="true">SENSEX</button>
+                <button class="x-pill" type="button" data-sym="BSE:BANKEX" aria-pressed="false">BANKEX</button>
+                <button class="x-pill" type="button" data-sym="TVC:USOIL" aria-pressed="false">CRUDE</button>
+                <button class="x-pill" type="button" data-sym="TVC:GOLD" aria-pressed="false">GOLD</button>
+                <button class="x-pill" type="button" data-sym="BSE:ICICIBANK" aria-pressed="false">ICICIBANK</button>
+                <button class="x-pill" type="button" data-sym="BSE:HDFCBANK" aria-pressed="false">HDFCBANK</button>
               </div>
             </header>
             <div class="ed-market">
@@ -1043,8 +1043,8 @@
     <div class="x-toast" id="toast" role="status" aria-live="polite"></div>
 
     <!-- Broker logos only (folded in at publish); its demo grid and trades are not used -->
-    <script src="algora-data.js"></script>
-    <script src="hark.js"></script>
+    <script src="algora-data.js?v=20261125b"></script>
+    <script src="hark.js?v=20261125b"></script>
     <script>
       (function () {
         var $ = function (s, r) { return (r || document).querySelector(s); };
@@ -1215,11 +1215,11 @@
 
         /* 5. TradingView widgets */
         var TV = "https://s3.tradingview.com/external-embedding/embed-widget-";
-        var chartSym = "NSE:NIFTY", quoteGroup = "indices";
+        var chartSym = "BSE:SENSEX", quoteGroup = "indices";
         var groups = {
-          indices: ["Indices", [["NSE:NIFTY", "Nifty 50"], ["NSE:BANKNIFTY", "Bank Nifty"], ["NSE:CNXFINANCE", "Fin Nifty"], ["BSE:SENSEX", "Sensex"], ["NSE:CNXIT", "Nifty IT"], ["NSE:INDIAVIX", "India VIX"]]],
-          stocks: ["Nifty 50 stocks", [["NSE:RELIANCE", "Reliance"], ["NSE:HDFCBANK", "HDFC Bank"], ["NSE:ICICIBANK", "ICICI Bank"], ["NSE:INFY", "Infosys"], ["NSE:TCS", "TCS"], ["NSE:SBIN", "SBI"], ["NSE:ITC", "ITC"], ["NSE:LT", "L&T"], ["NSE:BHARTIARTL", "Bharti Airtel"], ["NSE:AXISBANK", "Axis Bank"]]],
-          mcx: ["MCX", [["MCX:CRUDEOIL1!", "Crude Oil"], ["MCX:GOLD1!", "Gold"], ["MCX:SILVER1!", "Silver"], ["MCX:NATURALGAS1!", "Natural Gas"], ["MCX:COPPER1!", "Copper"]]]
+          indices: ["Indices", [["BSE:SENSEX", "Sensex"], ["BSE:BANKEX", "Bankex"], ["NSEIX:NIFTY1!", "GIFT Nifty"], ["BSE:BSE500", "BSE 500"], ["BSE:BSEIT", "BSE IT"]]],
+          stocks: ["Nifty 50 stocks", [["BSE:RELIANCE", "Reliance"], ["BSE:HDFCBANK", "HDFC Bank"], ["BSE:ICICIBANK", "ICICI Bank"], ["BSE:INFY", "Infosys"], ["BSE:TCS", "TCS"], ["BSE:SBIN", "SBI"], ["BSE:ITC", "ITC"], ["BSE:LT", "L&T"], ["BSE:BHARTIARTL", "Bharti Airtel"], ["BSE:AXISBANK", "Axis Bank"]]],
+          mcx: ["Commodities (global)", [["TVC:USOIL", "Crude (WTI)"], ["TVC:GOLD", "Gold"], ["TVC:SILVER", "Silver"], ["NYMEX:NG1!", "Natural Gas"], ["COMEX:HG1!", "Copper"]]]
         };
         function mount(id, kind, cfg) {
           var el = document.getElementById(id); if (!el) return;
@@ -1694,6 +1694,6 @@
         mountAll(); moveBar();
       })();
     </script>
-    <script src="algora-fx.js"></script>
+    <script src="algora-fx.js?v=20261125b"></script>
   </body>
 </html>
